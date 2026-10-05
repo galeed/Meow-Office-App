@@ -28,26 +28,15 @@
             height: 100vh;
         }
 
-        /* --- PANTALLA DE INICIO --- */
-        #intro-screen {
+        /* --- CONTENEDOR PRINCIPAL FIJO --- */
+        #main-layout {
             display: grid;
             grid-template-columns: 40px 1fr 1fr;
             grid-template-rows: 60px 1fr 100px;
             width: 100vw;
             height: 100vh;
             border: 1px solid var(--border-color);
-            transition: opacity 0.8s cubic-bezier(0.77, 0, 0.175, 1), filter 0.8s ease;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 10;
-        }
-
-        .intro-hidden {
-            opacity: 0;
-            filter: blur(15px);
-            pointer-events: none;
-            transform: scale(0.95);
+            position: relative;
         }
 
         /* Barra Superior */
@@ -58,6 +47,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 20;
         }
 
         .hamburger {
@@ -104,46 +94,8 @@
             font-family: 'Courier New', Courier, monospace;
             font-size: 0.7rem;
             letter-spacing: 2px;
+            z-index: 20;
         }
-
-        /* Contenido Central (Texto Gigante) */
-        .hero-text {
-            grid-column: 2;
-            grid-row: 2;
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            align-items: flex-end;
-            padding: 2rem 3rem;
-            font-size: clamp(2.5rem, 6vw, 7rem);
-            line-height: 0.85;
-            font-weight: 700;
-            letter-spacing: -2px;
-        }
-
-        /* Contenido Derecho (Imágenes Flotantes) */
-        .hero-visual {
-            grid-column: 3;
-            grid-row: 2;
-            position: relative;
-            overflow: hidden;
-            background: radial-gradient(circle at center, #111 0%, var(--bg-color) 80%);
-        }
-
-        .floating-img {
-            position: absolute;
-            width: 45%;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-        }
-
-        .img-1 { top: 10%; left: 15%; animation: float1 12s infinite alternate ease-in-out; z-index: 3; }
-        .img-2 { top: 35%; left: 40%; animation: float2 15s infinite alternate ease-in-out; z-index: 2; }
-        .img-3 { top: 55%; left: 15%; animation: float3 18s infinite alternate ease-in-out; z-index: 1; }
-
-        @keyframes float1 { 0% { transform: translateY(0px) rotate(-2deg); } 100% { transform: translateY(30px) rotate(3deg); } }
-        @keyframes float2 { 0% { transform: translateY(20px) rotate(4deg); } 100% { transform: translateY(-30px) rotate(-1deg); } }
-        @keyframes float3 { 0% { transform: translateY(-20px) rotate(-3deg); } 100% { transform: translateY(40px) rotate(2deg); } }
 
         /* Barra Inferior */
         .bottom-bar {
@@ -152,6 +104,7 @@
             border-top: 1px solid var(--border-color);
             display: flex;
             font-family: 'Courier New', Courier, monospace;
+            z-index: 20;
         }
 
         .bottom-info {
@@ -161,6 +114,7 @@
             flex-direction: column;
             justify-content: center;
             padding: 0 20px;
+            transition: opacity 0.5s;
         }
         .bottom-info p { font-size: 0.7rem; margin-bottom: 5px; color: #888;}
         .bottom-info h2 { font-size: 1rem; font-weight: normal; }
@@ -175,7 +129,7 @@
             color: #888;
         }
 
-        .btn-iniciar {
+        .btn-action {
             width: 30%;
             min-width: 150px;
             background-color: var(--text-color);
@@ -185,281 +139,321 @@
             font-weight: bold;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
         }
-        .btn-iniciar:hover { background-color: #cccccc; }
+        .btn-action:hover { background-color: #cccccc; transform: scale(0.98); }
 
-        /* --- MENÚ PRINCIPAL (LISTA DE APPS) --- */
-        #main-menu {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100vh;
-            display: none;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            padding: 2rem;
-            opacity: 0;
-            z-index: 5;
-            background-color: var(--bg-color);
-            overflow-y: auto;
-        }
-
-        #main-menu.visible { display: flex; animation: fadeInMenu 0.8s forwards 0.2s; }
-        @keyframes fadeInMenu { to { opacity: 1; } }
-
-        .app-card {
-            display: flex;
-            flex-direction: column;
-            width: 300px;
-            text-decoration: none;
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            background-color: #000;
-            transition: all 0.4s ease;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        #main-menu.visible .app-card:nth-child(1) { animation: slideUpFade 0.6s forwards 0.3s; }
-        #main-menu.visible .app-card:nth-child(2) { animation: slideUpFade 0.6s forwards 0.5s; }
-        #main-menu.visible .app-card:nth-child(3) { animation: slideUpFade 0.6s forwards 0.7s; }
-
-        @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
-
-        .app-card img { width: 100%; height: 400px; object-fit: cover; border-bottom: 1px solid var(--border-color); transition: all 0.4s ease; }
-        .app-title { padding: 20px; text-align: center; font-size: 1.1rem; font-family: 'Courier New', Courier, monospace; font-weight: bold; }
-
-        .app-card.docs:hover { border-color: var(--docs-color); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0, 229, 255, 0.15); }
-        .app-card.docs:hover .app-title { color: var(--docs-color); }
-        .app-card.sheets:hover { border-color: var(--sheets-color); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0, 255, 65, 0.15); }
-        .app-card.sheets:hover .app-title { color: var(--sheets-color); }
-        .app-card.slides:hover { border-color: var(--slides-color); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(255, 170, 0, 0.15); }
-        .app-card.slides:hover .app-title { color: var(--slides-color); }
-
-        /* --- VENTANAS EMERGENTES --- */
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(7, 7, 7, 0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* --- CLASES COMUNES PARA VISTAS CENTRALES --- */
+        .view-layer {
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.4s ease;
-            padding: 1rem;
-        }
-
-        .overlay.active { opacity: 1; pointer-events: auto; }
-
-        .overlay-content {
-            background-color: #0c0c0c;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            max-width: 650px;
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: absolute;
             width: 100%;
-            max-height: 85vh; 
-            overflow-y: auto; 
-            position: relative;
-            padding: 3rem 2.5rem 2.5rem 2.5rem;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            text-align: left;
+            height: 100%;
+        }
+        
+        .view-layer.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
         }
 
+        .view-layer.hidden-scale { transform: scale(0.95); opacity: 0; pointer-events: none; }
+
+        /* Contenedores para las dos secciones (Texto y Visual) en cada vista */
+        .view-text {
+            grid-column: 2; grid-row: 2;
+            padding: 2rem 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .view-visual {
+            grid-column: 3; grid-row: 2;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- VISTA 1: INTRODUCCIÓN --- */
+        #intro-text h1 {
+            font-size: clamp(2.5rem, 6vw, 7rem);
+            line-height: 0.85;
+            font-weight: 700;
+            letter-spacing: -2px;
+        }
+        
+        #intro-visual { background: radial-gradient(circle at center, #111 0%, var(--bg-color) 80%); }
+
+        .floating-img {
+            position: absolute; width: 45%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            border: 1px solid var(--border-color); border-radius: 4px;
+        }
+        .img-1 { top: 10%; left: 15%; animation: float1 12s infinite alternate ease-in-out; z-index: 3; }
+        .img-2 { top: 35%; left: 40%; animation: float2 15s infinite alternate ease-in-out; z-index: 2; }
+        .img-3 { top: 55%; left: 15%; animation: float3 18s infinite alternate ease-in-out; z-index: 1; }
+
+        @keyframes float1 { 0% { transform: translateY(0px) rotate(-2deg); } 100% { transform: translateY(30px) rotate(3deg); } }
+        @keyframes float2 { 0% { transform: translateY(20px) rotate(4deg); } 100% { transform: translateY(-30px) rotate(-1deg); } }
+        @keyframes float3 { 0% { transform: translateY(-20px) rotate(-3deg); } 100% { transform: translateY(40px) rotate(2deg); } }
+
+
+        /* --- VISTA 2: MENÚ DE APPS (ESTILO TARJETAS APILADAS) --- */
+        #apps-text h1 {
+            font-size: clamp(2rem, 5vw, 5rem);
+            line-height: 0.9;
+            font-weight: 700;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+        }
+        
+        #apps-text p {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            color: #ccc;
+            line-height: 1.5;
+            max-width: 80%;
+        }
+
+        #apps-visual {
+            perspective: 1000px; /* Para efecto 3D en las tarjetas */
+            background: radial-gradient(circle at center, #1a1a1a 0%, var(--bg-color) 70%);
+        }
+
+        .app-card {
+            position: absolute;
+            width: 240px; height: 350px;
+            background-color: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex; flex-direction: column;
+            text-decoration: none;
+            color: var(--text-color);
+            box-shadow: -15px 20px 40px rgba(0,0,0,0.9);
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+            /* Estado inicial oculto para la animación al abrir */
+            opacity: 0;
+            transform: translateY(100px) rotate(0deg); 
+        }
+
+        /* Imágenes de las tarjetas */
+        .app-card img {
+            width: 100%; height: 280px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 7px 7px 0 0;
+        }
+        .app-card .app-title {
+            padding: 15px; text-align: center; font-weight: bold;
+            font-family: 'Courier New', Courier, monospace; font-size: 0.95rem;
+        }
+
+        /* Posiciones Finales de las Tarjetas cuando la vista está activa */
+        .view-layer.active .app-card.docs {
+            opacity: 1; z-index: 1;
+            transform: rotate(-12deg) translate(-100px, -10px);
+            transition-delay: 0.1s;
+        }
+        .view-layer.active .app-card.sheets {
+            opacity: 1; z-index: 2;
+            transform: rotate(-2deg) translate(0px, 20px);
+            transition-delay: 0.25s;
+        }
+        .view-layer.active .app-card.slides {
+            opacity: 1; z-index: 3;
+            transform: rotate(10deg) translate(100px, 15px);
+            transition-delay: 0.4s;
+        }
+
+        /* Efecto Hover interactivo: La tarjeta salta al frente y se endereza */
+        .view-layer.active .app-card:hover {
+            z-index: 10;
+            transform: rotate(0deg) scale(1.1) translateY(-20px) !important;
+            box-shadow: 0 30px 60px rgba(0,0,0,1);
+            transition-delay: 0s;
+        }
+
+        .view-layer.active .app-card.docs:hover { border-color: var(--docs-color); }
+        .view-layer.active .app-card.docs:hover .app-title { color: var(--docs-color); }
+        .view-layer.active .app-card.sheets:hover { border-color: var(--sheets-color); }
+        .view-layer.active .app-card.sheets:hover .app-title { color: var(--sheets-color); }
+        .view-layer.active .app-card.slides:hover { border-color: var(--slides-color); }
+        .view-layer.active .app-card.slides:hover .app-title { color: var(--slides-color); }
+
+
+        /* --- VENTANAS EMERGENTES (Mantenidas intactas) --- */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(7, 7, 7, 0.7); backdrop-filter: blur(8px);
+            z-index: 100; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease; padding: 1rem;
+        }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+        .overlay-content {
+            background-color: #0c0c0c; border: 1px solid var(--border-color); border-radius: 12px;
+            max-width: 650px; width: 100%; max-height: 85vh; overflow-y: auto; 
+            position: relative; padding: 3rem 2.5rem 2.5rem 2.5rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); text-align: left;
+        }
         .overlay-content::-webkit-scrollbar { width: 8px; }
         .overlay-content::-webkit-scrollbar-track { background: transparent; }
         .overlay-content::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        .overlay-content::-webkit-scrollbar-thumb:hover { background: #555; }
-
         .overlay-close {
-            position: absolute;
-            top: 15px; right: 20px;
-            font-size: 2.5rem;
-            color: var(--text-color);
-            cursor: pointer;
-            font-weight: 300;
-            transition: transform 0.3s;
-            line-height: 1;
-            z-index: 10;
+            position: absolute; top: 15px; right: 20px; font-size: 2.5rem;
+            color: var(--text-color); cursor: pointer; transition: transform 0.3s; z-index: 10;
         }
         .overlay-close:hover { transform: scale(1.2) rotate(90deg); }
-        
         .overlay-content h2 { font-size: 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-        
         .app-info-block { margin-bottom: 2rem; }
         .app-info-block h3 { font-family: 'Courier New', Courier, monospace; font-size: 1.4rem; margin-bottom: 0.8rem; }
         .app-info-block.docs h3 { color: var(--docs-color); }
         .app-info-block.sheets h3 { color: var(--sheets-color); }
         .app-info-block.slides h3 { color: var(--slides-color); }
         .app-info-block p { font-size: 1.05rem; line-height: 1.6; color: #ccc; }
-
         .about-text { font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem; font-family: 'Courier New', Courier, monospace;}
-        
         .github-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px 30px;
-            background-color: var(--text-color);
-            color: var(--bg-color);
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 5px;
-            transition: background 0.3s, transform 0.2s;
+            display: inline-flex; align-items: center; gap: 15px; padding: 15px 30px;
+            background-color: var(--text-color); color: var(--bg-color); text-decoration: none;
+            font-size: 1.1rem; font-weight: bold; border-radius: 5px; transition: all 0.3s;
         }
         .github-btn:hover { background-color: #ccc; transform: translateY(-3px); }
         .github-btn svg { width: 24px; height: 24px; fill: currentColor; }
 
         /* --- RESPONSIVIDAD PARA MÓVILES --- */
         @media (max-width: 900px) {
-            #intro-screen {
+            #main-layout {
                 grid-template-columns: 40px 1fr;
                 grid-template-rows: 60px 1fr 1.2fr 80px; 
             }
             .top-bar { grid-column: 1 / 3; }
-            .hero-text { 
+            .sidebar { border-right: none; border-bottom: 1px solid var(--border-color); }
+            
+            /* Ajuste de celdas para textos y visuales */
+            .view-text { 
                 grid-column: 2; grid-row: 2; 
                 border-right: none; border-bottom: 1px solid var(--border-color);
-                padding: 1.5rem; 
+                padding: 1.5rem; justify-content: center;
             }
-            .hero-visual { grid-column: 2; grid-row: 3; }
+            .view-visual { grid-column: 2; grid-row: 3; }
+            
+            .bottom-bar { grid-column: 1 / 3; grid-row: 4; }
+            .price-box { display: none; } 
+            .btn-action { width: 40%; font-size: 1.3rem; }
+
+            /* Ajustes Intro Móvil */
             .floating-img { width: 55%; } 
             .img-1 { top: 5%; left: 10%; }
             .img-2 { top: 40%; left: 35%; }
             .img-3 { top: 60%; left: 5%; }
-            
-            .bottom-bar { grid-column: 1 / 3; grid-row: 4; }
-            .price-box { display: none; } 
-            .btn-iniciar { width: 40%; font-size: 1.5rem; }
-            
-            /* NUEVA DISTRIBUCIÓN DEL MENÚ EN MINIATURA (2 ARRIBA, 1 ABAJO CENTRADO) */
-            #main-menu { 
-                padding: 2rem 1.5rem; /* Mantiene los márgenes de la app */
-            }
-            
-            #main-menu.visible {
-                display: grid;
-                grid-template-columns: 1fr 1fr; /* Dos columnas proporcionales */
-                gap: 1rem; /* Espaciado entre las miniaturas */
-                align-content: center; /* Centra todo verticalmente */
-            }
 
-            .app-card { 
-                width: 100%; /* Toma todo el ancho de su columna */
-                max-width: none;
-            }
-
-            .app-card img { 
-                height: 220px; /* Tamaño de miniatura más compacto */
-            }
-
-            .app-title {
-                font-size: 0.85rem; /* Fuente un poco más pequeña */
-                padding: 12px 5px;
-            }
-
-            /* La app de Slides (la tercera) ocupa 2 columnas pero se ajusta al ancho de 1 */
-            .app-card.slides {
-                grid-column: 1 / -1; 
-                width: calc(50% - 0.5rem); /* Mide exactamente lo mismo que las de arriba */
-                margin: 0 auto; /* La centra perfectamente */
-            }
-
-            .overlay-content { 
-                width: 95%; 
-                padding: 3.5rem 1.5rem 2rem 1.5rem; 
-            }
-            .overlay-close { top: 10px; right: 15px; } 
-            .overlay-content h2 { font-size: 1.5rem; }
+            /* Ajustes Tarjetas Móvil */
+            .app-card { width: 170px; height: 250px; }
+            .app-card img { height: 180px; }
+            .view-layer.active .app-card.docs { transform: rotate(-10deg) translate(-50px, -20px); }
+            .view-layer.active .app-card.sheets { transform: rotate(0deg) translate(0px, 10px); }
+            .view-layer.active .app-card.slides { transform: rotate(10deg) translate(50px, 30px); }
         }
     </style>
 </head>
 <body>
 
-    <!-- Pantalla inicial con diseño de cuadrícula -->
-    <div id="intro-screen">
+    <div id="main-layout">
+        
+        <!-- Barra Superior -->
         <div class="top-bar">
-            <!-- Hamburguesa -->
             <div class="hamburger" id="btn-hamburger">
                 <span></span><span></span><span></span>
             </div>
-            <div class="logo">MEOW OFFICE APP</div>
+            <div class="logo">MEOW</div>
             <div class="top-links">
-                <!-- Botón About -->
                 <div id="btn-about">ABOUT</div>
             </div>
         </div>
 
+        <!-- Barra Lateral -->
         <div class="sidebar">MEOW OFFICE SUITE</div>
 
-        <div class="hero-text">
-            YOUR<br>TICKET<br>TO<br>EVERY-<br>THING<br>MEOW
+        <!-- ============================================== -->
+        <!-- CAPA 1: PANTALLA DE INICIO (Activa por defecto) -->
+        <!-- ============================================== -->
+        <div id="view-intro-text" class="view-layer view-text active">
+            <h1>YOUR<br>TICKET<br>TO<br>EVERY-<br>THING<br>MEOW</h1>
         </div>
-
-        <div class="hero-visual">
+        <div id="view-intro-visual" class="view-layer view-visual active">
             <img src="image.PNG" alt="Docs" class="floating-img img-1">
             <img src="image_2.PNG" alt="Sheets" class="floating-img img-2">
             <img src="image_3.PNG" alt="Slides" class="floating-img img-3">
         </div>
 
+
+        <!-- ============================================== -->
+        <!-- CAPA 2: MENÚ DE APPS (Oculta por defecto) -->
+        <!-- ============================================== -->
+        <div id="view-apps-text" class="view-layer view-text hidden-scale">
+            <div id="apps-text">
+                <h1>MEOW<br>APPS</h1>
+                <p>Selecciona una aplicación para comenzar a trabajar. Múltiples formatos, cero distracciones.<br><br>More info &rarr;</p>
+            </div>
+        </div>
+        <div id="view-apps-visual" class="view-layer view-visual hidden-scale">
+            <!-- Tarjetas apiladas estilo pases de cine -->
+            <a href="meow_docs.html" class="app-card docs">
+                <img src="image.PNG" alt="Meow Docs">
+                <div class="app-title">MEOW DOCS</div>
+            </a>
+            <a href="meow_sheets.html" class="app-card sheets">
+                <img src="image_2.PNG" alt="Meow Sheets">
+                <div class="app-title">MEOW SHEETS PRO</div>
+            </a>
+            <a href="meow_slides.html" class="app-card slides">
+                <img src="image_3.PNG" alt="Meow Slides">
+                <div class="app-title">MEOW SLIDES V3.0</div>
+            </a>
+        </div>
+
+
+        <!-- Barra Inferior -->
         <div class="bottom-bar">
-            <div class="bottom-info">
+            <div class="bottom-info" id="bottom-info-content">
                 <p>BENEFITS INCLUDE:</p>
                 <h2>01 &nbsp;&nbsp;&nbsp; OFFICE TOOLS</h2>
             </div>
             <div class="price-box">
                 FREE <span style="font-size: 0.7rem; margin-left: 5px;">/USER</span>
             </div>
-            <button id="iniciar-btn" class="btn-iniciar">INICIAR</button>
+            <!-- Este botón cambiará dinámicamente -->
+            <button id="btn-action" class="btn-action">INICIAR</button>
         </div>
+
     </div>
 
-    <!-- Menú de lista de aplicaciones que aparece tras hacer clic en Iniciar -->
-    <div id="main-menu">
-        <a href="meow_docs.html" class="app-card docs">
-            <img src="image.PNG" alt="Meow Docs">
-            <div class="app-title">MEOW DOCS APP</div>
-        </a>
-        <a href="meow_sheets.html" class="app-card sheets">
-            <img src="image_2.PNG" alt="Meow Sheets">
-            <div class="app-title">MEOW SHEETS APP</div>
-        </a>
-        <a href="meow_slides.html" class="app-card slides">
-            <img src="image_3.PNG" alt="Meow Slides">
-            <div class="app-title">MEOW SLIDES APP</div>div>
-        </a>
-    </div>
-
-    <!-- OVERLAY 1: INFORMACIÓN DE APPS (Hamburguesa) -->
+    <!-- OVERLAYS DE INFORMACIÓN (Mismo código de antes) -->
     <div class="overlay" id="overlay-apps">
         <div class="overlay-content">
             <div class="overlay-close" id="close-apps">&times;</div>
             <h2>NUESTRAS APLICACIONES</h2>
-            
             <div class="app-info-block docs">
-                <h3>MEOW DOCS APP</h3>
+                <h3>MEOW DOCS</h3>
                 <p>Procesador de textos diseñado para la máxima fluidez. Crea, edita y da formato a tus escritos en un entorno minimalista sin distracciones. Al finalizar, exporta tus archivos directamente en formato <strong>.docx</strong>, dejándolos listos para compartir, imprimir o colaborar en otras plataformas.</p>
             </div>
-            
             <div class="app-info-block sheets">
-                <h3>MEOW SHEETS APP</h3>
+                <h3>MEOW SHEETS PRO</h3>
                 <p>Potente herramienta de hojas de cálculo con una estética de terminal limpia. Gestiona datos, realiza cálculos matemáticos complejos, usa fórmulas integradas y organiza tu información de manera eficiente. Guarda tus libros de trabajo en formato <strong>.xlsx</strong> asegurando total compatibilidad.</p>
             </div>
-            
             <div class="app-info-block slides">
-                <h3>MEOW SLIDES APP</h3>
+                <h3>MEOW SLIDES V3.0</h3>
                 <p>Diseña presentaciones visualmente impactantes en tiempo récord. Crea tarjetas, añade textos dinámicos, gestiona tus notas de orador y personaliza cada detalle visual. Exporta tu presentación final en formato <strong>.pptx</strong> para cautivar a tu audiencia en cualquier sala de juntas o dispositivo.</p>
             </div>
         </div>
     </div>
 
-    <!-- OVERLAY 2: ABOUT Y GITHUB -->
     <div class="overlay" id="overlay-about">
         <div class="overlay-content" style="text-align: center;">
             <div class="overlay-close" id="close-about">&times;</div>
@@ -470,7 +464,6 @@
                 <p style="margin-top: 15px; color: #aaa;">Desarrollado por:</p>
                 <p><strong>Moustache de Chat LAB</strong></p>
             </div>
-            
             <a href="https://github.com/galeed/Meow-Office-App" target="_blank" class="github-btn">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
@@ -482,23 +475,67 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const btnIniciar = document.getElementById('iniciar-btn');
-            const introScreen = document.getElementById('intro-screen');
-            const mainMenu = document.getElementById('main-menu');
-            const body = document.body;
+            // Lógica para alternar entre Inicio y Menú de Apps
+            const btnAction = document.getElementById('btn-action');
+            const bottomInfo = document.getElementById('bottom-info-content');
+            
+            const introText = document.getElementById('view-intro-text');
+            const introVisual = document.getElementById('view-intro-visual');
+            const appsText = document.getElementById('view-apps-text');
+            const appsVisual = document.getElementById('view-apps-visual');
 
-            btnIniciar.addEventListener('click', () => {
-                introScreen.classList.add('intro-hidden');
-                setTimeout(() => {
-                    introScreen.style.display = 'none';
-                    body.style.overflow = 'auto';
+            let inMenu = false;
+
+            btnAction.addEventListener('click', () => {
+                if (!inMenu) {
+                    // 1. Ocultar Intro
+                    introText.classList.remove('active');
+                    introText.classList.add('hidden-scale');
+                    introVisual.classList.remove('active');
+                    introVisual.classList.add('hidden-scale');
                     
-                    mainMenu.style.display = 'flex'; // Desktop se mantiene en flex
-                    void mainMenu.offsetWidth; 
-                    mainMenu.classList.add('visible'); // En móvil, la clase .visible activará display: grid
-                }, 800); 
+                    bottomInfo.style.opacity = '0';
+
+                    // 2. Mostrar Menú de Apps y Cambiar Botón
+                    setTimeout(() => {
+                        appsText.classList.remove('hidden-scale');
+                        appsText.classList.add('active');
+                        appsVisual.classList.remove('hidden-scale');
+                        appsVisual.classList.add('active');
+                        
+                        btnAction.innerText = 'ATRÁS';
+                        bottomInfo.innerHTML = '<p>SELECT AN APP</p><h2>02 &nbsp;&nbsp;&nbsp; WORKSPACE</h2>';
+                        bottomInfo.style.opacity = '1';
+                        
+                        inMenu = true;
+                    }, 500); // Retardo para coordinar la animación
+
+                } else {
+                    // 1. Ocultar Menú de Apps
+                    appsText.classList.remove('active');
+                    appsText.classList.add('hidden-scale');
+                    appsVisual.classList.remove('active');
+                    appsVisual.classList.add('hidden-scale');
+                    
+                    bottomInfo.style.opacity = '0';
+
+                    // 2. Volver al Intro y Cambiar Botón
+                    setTimeout(() => {
+                        introText.classList.remove('hidden-scale');
+                        introText.classList.add('active');
+                        introVisual.classList.remove('hidden-scale');
+                        introVisual.classList.add('active');
+                        
+                        btnAction.innerText = 'INICIAR';
+                        bottomInfo.innerHTML = '<p>BENEFITS INCLUDE:</p><h2>01 &nbsp;&nbsp;&nbsp; OFFICE TOOLS</h2>';
+                        bottomInfo.style.opacity = '1';
+                        
+                        inMenu = false;
+                    }, 500);
+                }
             });
 
+            // Lógica para Overlays (Hamburguesa y About)
             const btnHamburger = document.getElementById('btn-hamburger');
             const btnAbout = document.getElementById('btn-about');
             const overlayApps = document.getElementById('overlay-apps');
@@ -508,10 +545,8 @@
 
             btnHamburger.addEventListener('click', () => { overlayApps.classList.add('active'); });
             btnAbout.addEventListener('click', () => { overlayAbout.classList.add('active'); });
-
             closeApps.addEventListener('click', () => { overlayApps.classList.remove('active'); });
             closeAbout.addEventListener('click', () => { overlayAbout.classList.remove('active'); });
-
             window.addEventListener('click', (e) => {
                 if (e.target === overlayApps) { overlayApps.classList.remove('active'); }
                 if (e.target === overlayAbout) { overlayAbout.classList.remove('active'); }
