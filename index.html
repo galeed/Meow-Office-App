@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meow Office App</title>
+    <style>
+        /* Variables de color basadas en las capturas de las apps */
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --border-color: #333333;
+            --docs-color: #00e5ff;   /* Cyan */
+            --sheets-color: #00ff41; /* Verde */
+            --slides-color: #ffaa00; /* Naranja/Amarillo */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: hidden;
+            height: 100vh;
+        }
+
+        /* --- PANTALLA DE INICIO --- */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-color);
+            z-index: 10;
+            transition: opacity 0.8s cubic-bezier(0.77, 0, 0.175, 1), transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        #intro-screen h1 {
+            font-size: 3rem;
+            letter-spacing: 0.2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border: 2px solid var(--text-color);
+            padding: 20px 40px;
+        }
+
+        .btn-iniciar {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+            padding: 15px 50px;
+            font-size: 1.5rem;
+            font-family: inherit;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-iniciar:hover {
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        /* Clase añadida mediante JS para la animación de salida */
+        .intro-hidden {
+            opacity: 0;
+            transform: translateY(-50px);
+            pointer-events: none;
+        }
+
+        /* --- MENÚ PRINCIPAL (LISTA DE APPS) --- */
+        #main-menu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            display: none; /* Cambia a flex mediante JS */
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+            opacity: 0;
+        }
+
+        /* Animación de entrada del menú */
+        #main-menu.visible {
+            display: flex;
+            animation: fadeInMenu 1s forwards 0.3s;
+        }
+
+        @keyframes fadeInMenu {
+            to { opacity: 1; }
+        }
+
+        /* Tarjetas de las aplicaciones */
+        .app-card {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+            text-decoration: none;
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            background-color: #000;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* Animación escalonada para cada tarjeta */
+        #main-menu.visible .app-card:nth-child(1) { animation: slideUpFade 0.6s forwards 0.4s; }
+        #main-menu.visible .app-card:nth-child(2) { animation: slideUpFade 0.6s forwards 0.6s; }
+        #main-menu.visible .app-card:nth-child(3) { animation: slideUpFade 0.6s forwards 0.8s; }
+
+        @keyframes slideUpFade {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .app-card img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--border-color);
+            transition: all 0.4s ease;
+        }
+
+        .app-title {
+            padding: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 0.1rem;
+            transition: color 0.3s ease;
+        }
+
+        /* Efectos Hover específicos por App */
+        .app-card.docs:hover {
+            border-color: var(--docs-color);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+            transform: translateY(-5px);
+        }
+        .app-card.docs:hover .app-title { color: var(--docs-color); }
+        .app-card.docs:hover img { border-bottom-color: var(--docs-color); filter: brightness(1.2); }
+
+        .app-card.sheets:hover {
+            border-color: var(--sheets-color);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+            transform: translateY(-5px);
+        }
+        .app-card.sheets:hover .app-title { color: var(--sheets-color); }
+        .app-card.sheets:hover img { border-bottom-color: var(--sheets-color); filter: brightness(1.2); }
+
+        .app-card.slides:hover {
+            border-color: var(--slides-color);
+            box-shadow: 0 0 15px rgba(255, 170, 0, 0.2);
+            transform: translateY(-5px);
+        }
+        .app-card.slides:hover .app-title { color: var(--slides-color); }
+        .app-card.slides:hover img { border-bottom-color: var(--slides-color); filter: brightness(1.2); }
+
+        /* Responsividad para móviles */
+        @media (max-width: 900px) {
+            #main-menu {
+                flex-direction: column;
+                padding-top: 4rem;
+                padding-bottom: 4rem;
+            }
+            #intro-screen h1 {
+                font-size: 2rem;
+                padding: 15px 20px;
+                margin: 0 1rem 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla inicial con animación de despeje -->
+    <div id="intro-screen">
+        <h1>MEOW OFFICE APP</h1>
+        <button id="iniciar-btn" class="btn-iniciar">INICIAR</button>
+    </div>
+
+    <!-- Menú de lista de aplicaciones -->
+    <div id="main-menu">
+        
+        <!-- Meow Docs -->
+        <a href="meow_docs.html" class="app-card docs">
+            <img src="image.png" alt="Captura de Meow Docs">
+            <div class="app-title">MEOW DOCS</div>
+        </a>
+
+        <!-- Meow Sheets -->
+        <a href="meow_sheets.html" class="app-card sheets">
+            <img src="image_2.png" alt="Captura de Meow Sheets">
+            <div class="app-title">MEOW SHEETS PRO</div>
+        </a>
+
+        <!-- Meow Slides -->
+        <a href="meow_slides.html" class="app-card slides">
+            <img src="image_3.png" alt="Captura de Meow Slides">
+            <div class="app-title">MEOW SLIDES V3.0</div>
+        </a>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnIniciar = document.getElementById('iniciar-btn');
+            const introScreen = document.getElementById('intro-screen');
+            const mainMenu = document.getElementById('main-menu');
+
+            btnIniciar.addEventListener('click', () => {
+                // 1. Añadimos la clase para que el inicio se desvanezca y suba
+                introScreen.classList.add('intro-hidden');
+
+                // 2. Esperamos a que termine la transición de CSS (0.8s) para ocultarlo del DOM
+                setTimeout(() => {
+                    introScreen.style.display = 'none';
+                    
+                    // 3. Mostramos el contenedor principal y disparamos su animación
+                    mainMenu.style.display = 'flex';
+                    // Pequeño truco para reiniciar el flujo del DOM y que las animaciones de clase surtan efecto
+                    void mainMenu.offsetWidth; 
+                    mainMenu.classList.add('visible');
+                }, 800); // Coincide con la duración de transition en CSS
+            });
+        });
+    </script>
+</body>
+</html>
