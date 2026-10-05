@@ -238,8 +238,7 @@
         .app-card.slides:hover { border-color: var(--slides-color); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(255, 170, 0, 0.15); }
         .app-card.slides:hover .app-title { color: var(--slides-color); }
 
-
-        /* --- VENTANAS EMERGENTES (OVERLAYS CORREGIDOS) --- */
+        /* --- VENTANAS EMERGENTES --- */
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -253,33 +252,30 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
-            padding: 1rem; /* Margen base de la pantalla */
+            padding: 1rem;
         }
 
         .overlay.active { opacity: 1; pointer-events: auto; }
 
-        /* La caja que simula la ventana */
         .overlay-content {
             background-color: #0c0c0c;
             border: 1px solid var(--border-color);
             border-radius: 12px;
             max-width: 650px;
             width: 100%;
-            max-height: 85vh; /* Altura máxima para permitir scroll */
-            overflow-y: auto; /* Añade scroll si el texto es muy largo */
+            max-height: 85vh; 
+            overflow-y: auto; 
             position: relative;
             padding: 3rem 2.5rem 2.5rem 2.5rem;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             text-align: left;
         }
 
-        /* Personalización de barra de scroll para la ventana */
         .overlay-content::-webkit-scrollbar { width: 8px; }
         .overlay-content::-webkit-scrollbar-track { background: transparent; }
         .overlay-content::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         .overlay-content::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        /* Botón cerrar integrado dentro de la ventana */
         .overlay-close {
             position: absolute;
             top: 15px; right: 20px;
@@ -342,16 +338,44 @@
             .price-box { display: none; } 
             .btn-iniciar { width: 40%; font-size: 1.5rem; }
             
-            #main-menu { padding: 4rem 1rem; }
-            .app-card { width: 100%; max-width: 350px; }
-            .app-card img { height: 350px; }
+            /* NUEVA DISTRIBUCIÓN DEL MENÚ EN MINIATURA (2 ARRIBA, 1 ABAJO CENTRADO) */
+            #main-menu { 
+                padding: 2rem 1.5rem; /* Mantiene los márgenes de la app */
+            }
+            
+            #main-menu.visible {
+                display: grid;
+                grid-template-columns: 1fr 1fr; /* Dos columnas proporcionales */
+                gap: 1rem; /* Espaciado entre las miniaturas */
+                align-content: center; /* Centra todo verticalmente */
+            }
 
-            /* Ajustes precisos para las ventanas en móvil */
+            .app-card { 
+                width: 100%; /* Toma todo el ancho de su columna */
+                max-width: none;
+            }
+
+            .app-card img { 
+                height: 220px; /* Tamaño de miniatura más compacto */
+            }
+
+            .app-title {
+                font-size: 0.85rem; /* Fuente un poco más pequeña */
+                padding: 12px 5px;
+            }
+
+            /* La app de Slides (la tercera) ocupa 2 columnas pero se ajusta al ancho de 1 */
+            .app-card.slides {
+                grid-column: 1 / -1; 
+                width: calc(50% - 0.5rem); /* Mide exactamente lo mismo que las de arriba */
+                margin: 0 auto; /* La centra perfectamente */
+            }
+
             .overlay-content { 
                 width: 95%; 
-                padding: 3.5rem 1.5rem 2rem 1.5rem; /* Asegura espacio alrededor del texto */
+                padding: 3.5rem 1.5rem 2rem 1.5rem; 
             }
-            .overlay-close { top: 10px; right: 15px; } /* Reposiciona la 'X' para no estorbar */
+            .overlay-close { top: 10px; right: 15px; } 
             .overlay-content h2 { font-size: 1.5rem; }
         }
     </style>
@@ -365,7 +389,7 @@
             <div class="hamburger" id="btn-hamburger">
                 <span></span><span></span><span></span>
             </div>
-            <div class="logo">MEOW</div>
+            <div class="logo">MEOW OFFICE APP</div>
             <div class="top-links">
                 <!-- Botón About -->
                 <div id="btn-about">ABOUT</div>
@@ -400,37 +424,36 @@
     <div id="main-menu">
         <a href="meow_docs.html" class="app-card docs">
             <img src="image.PNG" alt="Meow Docs">
-            <div class="app-title">MEOW DOCS</div>
+            <div class="app-title">MEOW DOCS APP</div>
         </a>
         <a href="meow_sheets.html" class="app-card sheets">
             <img src="image_2.PNG" alt="Meow Sheets">
-            <div class="app-title">MEOW SHEETS PRO</div>
+            <div class="app-title">MEOW SHEETS APP</div>
         </a>
         <a href="meow_slides.html" class="app-card slides">
             <img src="image_3.PNG" alt="Meow Slides">
-            <div class="app-title">MEOW SLIDES V3.0</div>
+            <div class="app-title">MEOW SLIDES APP</div>div>
         </a>
     </div>
 
     <!-- OVERLAY 1: INFORMACIÓN DE APPS (Hamburguesa) -->
     <div class="overlay" id="overlay-apps">
-        <!-- El botón de cierre ahora está DENTRO del marco del contenido -->
         <div class="overlay-content">
             <div class="overlay-close" id="close-apps">&times;</div>
             <h2>NUESTRAS APLICACIONES</h2>
             
             <div class="app-info-block docs">
-                <h3>MEOW DOCS</h3>
+                <h3>MEOW DOCS APP</h3>
                 <p>Procesador de textos diseñado para la máxima fluidez. Crea, edita y da formato a tus escritos en un entorno minimalista sin distracciones. Al finalizar, exporta tus archivos directamente en formato <strong>.docx</strong>, dejándolos listos para compartir, imprimir o colaborar en otras plataformas.</p>
             </div>
             
             <div class="app-info-block sheets">
-                <h3>MEOW SHEETS PRO</h3>
+                <h3>MEOW SHEETS APP</h3>
                 <p>Potente herramienta de hojas de cálculo con una estética de terminal limpia. Gestiona datos, realiza cálculos matemáticos complejos, usa fórmulas integradas y organiza tu información de manera eficiente. Guarda tus libros de trabajo en formato <strong>.xlsx</strong> asegurando total compatibilidad.</p>
             </div>
             
             <div class="app-info-block slides">
-                <h3>MEOW SLIDES V3.0</h3>
+                <h3>MEOW SLIDES APP</h3>
                 <p>Diseña presentaciones visualmente impactantes en tiempo récord. Crea tarjetas, añade textos dinámicos, gestiona tus notas de orador y personaliza cada detalle visual. Exporta tu presentación final en formato <strong>.pptx</strong> para cautivar a tu audiencia en cualquier sala de juntas o dispositivo.</p>
             </div>
         </div>
@@ -438,7 +461,6 @@
 
     <!-- OVERLAY 2: ABOUT Y GITHUB -->
     <div class="overlay" id="overlay-about">
-        <!-- El botón de cierre ahora está DENTRO del marco del contenido -->
         <div class="overlay-content" style="text-align: center;">
             <div class="overlay-close" id="close-about">&times;</div>
             <h2>ABOUT</h2>
@@ -471,9 +493,9 @@
                     introScreen.style.display = 'none';
                     body.style.overflow = 'auto';
                     
-                    mainMenu.style.display = 'flex';
+                    mainMenu.style.display = 'flex'; // Desktop se mantiene en flex
                     void mainMenu.offsetWidth; 
-                    mainMenu.classList.add('visible');
+                    mainMenu.classList.add('visible'); // En móvil, la clase .visible activará display: grid
                 }, 800); 
             });
 
