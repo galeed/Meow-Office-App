@@ -1,0 +1,1511 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Meow Docs - Ultimate Edition</title>
+  
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@300;400;700&family=Oswald:wght@500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Librerías de Exportación -->
+  <script src="https://unpkg.com/docx@7.1.0/build/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #050505;
+      --app-bg: #000000;
+      --text: #ffffff;
+      --border: #ffffff;
+      --subtext: #888888;
+      --muted-num: #666666;
+      --hover-bg: #ffffff;
+      --hover-text: #000000;
+      --hover-tool: #111111;
+      --export-primary-bg: #ffffff;
+      --export-primary-text: #000000;
+      --placeholder: #444444;
+      --accent: #ffffff;
+
+      --border-outer: 3px;
+      --border-thick: 2px;
+      --border-thin: 1px;
+      
+      --editor-line-height: 1.6;
+      --editor-paragraph-gap: 12px;
+    }
+
+    body.light-mode {
+      --bg: #f0f0f0;
+      --app-bg: #ffffff;
+      --text: #000000;
+      --border: #000000;
+      --subtext: #666666;
+      --muted-num: #999999;
+      --hover-bg: #000000;
+      --hover-text: #ffffff;
+      --hover-tool: #f0f0f0;
+      --export-primary-bg: #000000;
+      --export-primary-text: #ffffff;
+      --placeholder: #aaaaaa;
+      --accent: #000000;
+    }
+
+    /* Variaciones Neón */
+    body.accent-green { --accent: #00ff66; --border: #00ff66; }
+    body.accent-magenta { --accent: #ff007f; --border: #ff007f; }
+    body.accent-cyan { --accent: #00f3ff; --border: #00f3ff; }
+    body.accent-yellow { --accent: #ffe600; --border: #ffe600; }
+    body.accent-amber { --accent: #ffb000; --border: #ffb000; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      padding: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .app-frame {
+      width: 100%;
+      max-width: 900px;
+      height: 100%;
+      max-height: calc(100dvh - 16px);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background-color: var(--app-bg);
+      border: var(--border-outer) solid var(--border);
+      transition: border-color 0.3s ease, background-color 0.3s ease;
+      overflow: hidden;
+    }
+
+    .app-frame.zen-mode header,
+    .app-frame.zen-mode .sidebar-text,
+    .app-frame.zen-mode .bottom-grid,
+    .app-frame.zen-mode .doc-subtitle,
+    .app-frame.zen-mode .status-bar {
+      display: none !important;
+    }
+
+    .zen-exit-btn {
+      display: none;
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--app-bg);
+      color: var(--text);
+      border: var(--border-thick) solid var(--border);
+      padding: 6px 10px;
+      font-size: 10px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      z-index: 30;
+      text-transform: uppercase;
+    }
+
+    .app-frame.zen-mode .zen-exit-btn {
+      display: block;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 44px 1fr 44px 70px;
+      border-bottom: var(--border-thick) solid var(--border);
+      align-items: stretch;
+      flex-shrink: 0;
+      transition: border-color 0.3s ease;
+    }
+
+    .header-btn {
+      background: transparent;
+      color: var(--text);
+      border: none;
+      border-right: var(--border-thick) solid var(--border);
+      padding: 10px 4px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s, border-color 0.3s ease;
+    }
+
+    .header-btn:hover {
+      background: var(--hover-bg);
+      color: var(--hover-text);
+    }
+
+    .brand-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 18px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 10px 0;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .main-body {
+      display: flex;
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar-text {
+      width: 26px;
+      border-right: var(--border-thick) solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 16px;
+      transition: border-color 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .sidebar-text span {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-size: 8px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--subtext);
+      white-space: nowrap;
+    }
+
+    .editor-wrapper {
+      flex: 1;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      min-width: 0;
+      position: relative;
+      scroll-behavior: smooth;
+    }
+
+    .doc-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 26px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      line-height: 1.1;
+      color: var(--text);
+      outline: none;
+    }
+
+    .doc-subtitle {
+      font-size: 11px;
+      color: var(--subtext);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .search-bar, .prompter-bar {
+      display: none;
+      gap: 6px;
+      margin-bottom: 12px;
+      background: var(--app-bg);
+      border: var(--border-thick) solid var(--border);
+      padding: 6px;
+      align-items: center;
+    }
+
+    .search-bar.open, .prompter-bar.open {
+      display: flex;
+    }
+
+    .search-input {
+      background: transparent;
+      border: var(--border-thin) solid var(--border);
+      color: var(--text);
+      padding: 6px;
+      font-size: 11px;
+      flex: 1;
+      outline: none;
+    }
+
+    .search-btn {
+      background: transparent;
+      color: var(--text);
+      border: var(--border-thin) solid var(--border);
+      padding: 6px 10px;
+      font-size: 10px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    #editor {
+      flex: 1;
+      min-height: 250px;
+      color: var(--text);
+      font-size: 14px;
+      line-height: var(--editor-line-height);
+      outline: none;
+      border: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      transition: font-size 0.2s ease, line-height 0.2s ease;
+    }
+
+    #editor p, #editor div {
+      margin-bottom: var(--editor-paragraph-gap);
+    }
+
+    #editor.font-oswald { font-family: 'Oswald', sans-serif; }
+    #editor.font-helvetica { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+    #editor.font-segoe { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+    #editor.font-mono { font-family: 'Courier New', Courier, monospace; }
+    #editor.font-serif { font-family: 'Lora', Georgia, serif; }
+    #editor.font-sans { font-family: Arial, sans-serif; }
+
+    #editor.page-break-sim {
+      background-image: linear-gradient(to bottom, transparent 98%, var(--subtext) 98%);
+      background-size: 100% 800px;
+    }
+
+    #editor:empty:before {
+      content: "Empieza a escribir tu documento...";
+      color: var(--placeholder);
+    }
+
+    .highlight-text {
+      background-color: var(--accent);
+      color: #000000;
+      padding: 2px 4px;
+    }
+
+    .code-block {
+      background-color: rgba(255, 255, 255, 0.08);
+      border-left: 3px solid var(--accent);
+      font-family: monospace;
+      padding: 8px 12px;
+      margin: 8px 0;
+      display: block;
+      white-space: pre-wrap;
+    }
+
+    .signature-container {
+      display: block;
+      margin: 24px 0 12px 0;
+      border-top: 2px solid var(--border);
+      padding-top: 8px;
+      width: 260px;
+      user-select: none;
+    }
+
+    .signature-input {
+      width: 100%;
+      border: 1px dashed var(--subtext);
+      background: transparent;
+      color: var(--text);
+      padding: 8px;
+      font-size: 12px;
+      outline: none;
+      text-align: center;
+    }
+
+    .signature-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--subtext);
+      margin-top: 4px;
+      display: block;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 12px;
+      border-top: var(--border-thin) solid var(--border);
+      font-size: 9px;
+      color: var(--subtext);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: var(--app-bg);
+    }
+
+    .progress-bar-container {
+      width: 80px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid var(--border);
+      display: inline-block;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .drawer-menu {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--app-bg);
+      z-index: 50;
+      transition: left 0.3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .drawer-menu.open {
+      left: 0;
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: var(--border-thick) solid var(--border);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 18px;
+      letter-spacing: 2px;
+    }
+
+    .drawer-close {
+      background: transparent;
+      border: var(--border-thick) solid var(--border);
+      color: var(--text);
+      font-size: 16px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .drawer-close:hover {
+      background: var(--hover-bg);
+      color: var(--hover-text);
+    }
+
+    .drawer-accordion-btn {
+      width: 100%;
+      background: transparent;
+      color: var(--text);
+      border: var(--border-thick) solid var(--border);
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+    }
+
+    .drawer-accordion-btn:hover {
+      background: var(--hover-bg);
+      color: var(--hover-text);
+    }
+
+    .drawer-dropdown-content {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px 0 6px 12px;
+      border-left: var(--border-thick) solid var(--border);
+      margin-bottom: 6px;
+    }
+
+    .drawer-dropdown-content.show {
+      display: flex;
+    }
+
+    .drawer-sub-item {
+      background: transparent;
+      color: var(--text);
+      border: var(--border-thin) solid var(--border);
+      padding: 10px 12px;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+
+    .drawer-sub-item:hover {
+      background: var(--hover-bg);
+      color: var(--hover-text);
+    }
+
+    .github-link-item {
+      margin-top: 16px;
+      border: var(--border-thick) solid var(--border);
+      font-weight: bold;
+      justify-content: center;
+    }
+
+    .github-icon {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .color-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .stats-box {
+      border: var(--border-thin) solid var(--border);
+      padding: 12px;
+      font-size: 10px;
+      color: var(--text);
+      line-height: 1.6;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .bottom-grid {
+      border-top: var(--border-thick) solid var(--border);
+      display: flex;
+      align-items: stretch;
+      flex-shrink: 0;
+      transition: border-color 0.3s ease;
+    }
+
+    .toolbar-tools-compact {
+      display: flex;
+      flex: 1;
+      overflow-x: auto;
+    }
+
+    .tool-btn-compact {
+      background: transparent;
+      color: var(--text);
+      border: none;
+      border-right: var(--border-thick) solid var(--border);
+      padding: 12px 14px;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s ease;
+    }
+
+    .tool-btn-compact:hover {
+      background: var(--hover-tool);
+    }
+
+    .export-wrapper {
+      position: relative;
+      width: 130px;
+    }
+
+    .btn-export-trigger {
+      width: 100%;
+      height: 100%;
+      background: var(--export-primary-bg);
+      color: var(--export-primary-text);
+      border: none;
+      border-left: var(--border-thick) solid var(--border);
+      padding: 12px 0;
+      font-family: 'Oswald', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .export-dropdown {
+      display: none;
+      position: absolute;
+      bottom: 100%;
+      right: 0;
+      width: 180px;
+      background: var(--app-bg);
+      border: var(--border-outer) solid var(--border);
+      z-index: 10;
+      flex-direction: column;
+    }
+
+    .export-dropdown.show {
+      display: flex;
+    }
+
+    .export-option {
+      background: transparent;
+      color: var(--text);
+      border: none;
+      border-bottom: var(--border-thick) solid var(--border);
+      padding: 10px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .export-option:last-child {
+      border-bottom: none;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+      }
+      .app-frame {
+        border: none !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+      }
+      header, .sidebar-text, .bottom-grid, .drawer-menu, .zen-exit-btn, .status-bar, .doc-subtitle, .search-bar, .prompter-bar {
+        display: none !important;
+      }
+      .editor-wrapper {
+        padding: 0 !important;
+      }
+      #editor {
+        color: #000000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-frame" id="appFrame">
+    <button class="zen-exit-btn" onclick="toggleZenMode()">Salir Zen ✕</button>
+
+    <!-- MENÚ LATERAL DESPLEGABLE COMPLETO -->
+    <div class="drawer-menu" id="drawerMenu">
+      <div class="drawer-header">
+        <span>PANEL MEOW DOCS ULTIMATE</span>
+        <button class="drawer-close" onclick="toggleDrawer()">CERRAR ✕</button>
+      </div>
+
+      <!-- 1. GESTOR MULTI-DOCUMENTO LOCAL -->
+      <button class="drawer-accordion-btn" onclick="toggleAccordion('acc-docs', 'arrow-docs')">
+        01. Gestor de Documentos <span id="arrow-docs">▼</span>
+      </button>
+      <div class="drawer-dropdown-content" id="acc-docs">
+        <button class="drawer-sub-item" onclick="createNewDocInManager()">📄 Nuevo Documento</button>
+        <button class="drawer-sub-item" onclick="duplicateCurrentDoc()">📋 Duplicar Actual</button>
+        <div id="docListContainer" style="display:flex; flex-direction:column; gap:4px; margin-top:6px;"></div>
+      </div>
+
+      <!-- 2. PLANTILLAS PREDEFINIDAS -->
+      <button class="drawer-accordion-btn" onclick="toggleAccordion('acc-tpl', 'arrow-tpl')">
+        02. Cargar Plantillas <span id="arrow-tpl">▼</span>
+      </button>
+      <div class="drawer-dropdown-content" id="acc-tpl">
+        <button class="drawer-sub-item" onclick="loadTemplate('recomendacion')">✉️ Carta de Recomendación</button>
+        <button class="drawer-sub-item" onclick="loadTemplate('guion')">🎬 Guion Literario / Escena</button>
+        <button class="drawer-sub-item" onclick="loadTemplate('comunicado')">📰 Comunicado Editorial</button>
+        <button class="drawer-sub-item" onclick="loadTemplate('vacia')">📝 Nota en Blanco</button>
+      </div>
+
+      <!-- 3. GESTIÓN DE ARCHIVO E IMPORTACIÓN -->
+      <button class="drawer-accordion-btn" onclick="toggleAccordion('acc-1', 'arrow-1')">
+        03. Archivo e Importación <span id="arrow-1">▼</span>
+      </button>
+      <div class="drawer-dropdown-content" id="acc-1">
+        <button class="drawer-sub-item" onclick="triggerImportFile()">📂 Importar (.TXT / .MD)</button>
+        <input type="file" id="fileImportInput" accept=".txt,.md" style="display:none;" onchange="importFile(event)">
+        <button class="drawer-sub-item" onclick="copyToClipboard()">Copiar Texto Plano</button>
+        <button class="drawer-sub-item" onclick="clearEditor()">Vaciar Lienzo</button>
+      </div>
+
+      <!-- 4. FORMATO Y ALINEACIÓN DE TEXTO -->
+      <button class="drawer-accordion-btn" onclick="toggleAccordion('acc-2', 'arrow-2')">
+        04. Formato y Alineación <span id="arrow-2">▼</span>
+      </button>
+      <div class="drawer-dropdown-content" id="acc-2">
+        <button class="drawer-sub-item" onclick="execCmd('bold')">Negrita (Bold)</button>
+        <button class="drawer-sub-item" onclick="execCmd('italic')">Cursiva (Italic)</button>
+        <button class="drawer-sub-item" onclick="execCmd('underline')">Subrayado</button>
+        <button class="drawer-sub-item" onclick="highlightSelection()">Resaltar Neón</button>
+        <button class="drawer-sub-item" onclick="insertCodeBlock()">Bloque de Código</button>
+        <button class="drawer-sub-item" onclick="execCmd('justifyLeft')">Alinear Izquierda</button>
+        <button class="drawer-sub-item" onclick="execCmd('justifyCenter')">Centrar</button>
+        <button class="drawer-sub-item" onclick="execCmd('justifyRight')">Alinear Derecha</button>
+        <button class="drawer-sub-item" onclick="execCmd('justifyFull')">Justificar Texto</button>
+      </div>
+
+      <!-- 5. ENFOQUE, AMBIENTE Y PRODUCTIVIDAD -->
+      <button class="drawer-accordion-btn" onclick="toggleAccordion('acc-prod', 'arrow-prod')">
+        05. Enfoque y Audio Ambient <span id="arrow-prod">▼</span>
+      </button>
+      <div class="drawer-dropdown-content" id="acc-prod">
+        <button class="drawer-sub-item" onclick="togglePomodoro()">⏱️ Pomodoro: <span id="pomoStatus">OFF</span></button>
+        <button class="drawer-sub-item" onclick="toggleAmbientNoise()">🌧️ Ruido de Lluvia Ambient: <span id="noiseStatus">OFF</span></button>
+        <button class="drawer-sub-item" onclick="setWordGoal()">🎯 Fijar Meta de Palabras</button>
+        <button class="drawer-sub-item" onclick="togglePrompterBar()">📺 Modo Teleprompter</button>
+      </div>
+
+      <!-- 6. TIPOGRAFÍA Y DISEÑO DE PÁRRAFO -->
+      <button class="drawer-accordion-btn" onclick="toggleAccordion('acc-4', 'arrow-4')">
+        06. Tipografía y Párrafo <span id="arrow-4">▼</span>
+      </button>
+      <div class="drawer-dropdown-content" id="acc-4">
+        <button class="drawer-sub-item" onclick="setFontFamily('font-oswald')">Fuente: Oswald (Título)</button>
+        <button class="drawer-sub-item" onclick="setFontFamily('font-helvetica')">Fuente: Helvetica Neue</button>
+        <button class="drawer-sub-item" onclick="setFontFamily('font-segoe')">Fuente: Segoe UI</button>
+        <button class="drawer-sub-item" onclick="setFontFamily('font-mono')">Fuente: Monospace</button>
+        <button class="drawer-sub-item" onclick="setFontFamily('font-serif')">Fuente: Lora Serif</button>
+        <button class="drawer-sub-item" onclick="setLineHeight('1.2')">Interlineado: Compacto (1.2)</button>
+        <button class="drawer-sub-item" onclick="setLineHeight('1.6')">Interlineado: Normal (1.6)</button>
+        <button class="drawer-sub-item" onclick="setLineHeight('2.0')">Interlineado: Doble (2.0)</button>
+      </div>
+
+      <!-- 7. HERRAMIENTAS Y MODO AUDIO/VISTA -->
+      <button class="drawer-accordion-btn" onclick="toggleAccordion('acc-3', 'arrow-3')">
+        07. Herramientas Avanzadas <span id="arrow-3">▼</span>
+      </button>
+      <div class="drawer-dropdown-content" id="acc-3">
+        <button class="drawer-sub-item" onclick="toggleSoundFX()">🔊 Sonido Teclado: <span id="soundStatus">OFF</span></button>
+        <button class="drawer-sub-item" onclick="togglePageBreaks()">📄 Guías Salto de Página</button>
+        <button class="drawer-sub-item" onclick="printDocument()">🖨️ Imprimir Documento</button>
+        <button class="drawer-sub-item" onclick="insertSignatureField()">✒️ Campo de Firma</button>
+        <button class="drawer-sub-item" onclick="toggleZenMode()">🖥️ Modo Zen (Limpio)</button>
+        <button class="drawer-sub-item" onclick="toggleSearchBar()">🔍 Buscar y Reemplazar</button>
+        <button class="drawer-sub-item" onclick="startSpeechRecognition()">🎙️ Dictado por Voz</button>
+        <button class="drawer-sub-item" onclick="insertTimestamp()">🕒 Fecha y Hora</button>
+        <button class="drawer-sub-item" onclick="formatScript()">🎬 Formatear como Guion</button>
+      </div>
+
+      <!-- 8. COLOR Y ACENTO NEÓN -->
+      <button class="drawer-accordion-btn" onclick="toggleAccordion('acc-5', 'arrow-5')">
+        08. Color Neón Acento <span id="arrow-5">▼</span>
+      </button>
+      <div class="drawer-dropdown-content" id="acc-5">
+        <button class="drawer-sub-item" onclick="setAccent('')"><span class="color-dot" style="background:#fff; border:1px solid #888;"></span> Monocromo</button>
+        <button class="drawer-sub-item" onclick="setAccent('accent-green')"><span class="color-dot" style="background:#00ff66;"></span> Verde Cyber</button>
+        <button class="drawer-sub-item" onclick="setAccent('accent-magenta')"><span class="color-dot" style="background:#ff007f;"></span> Magenta Neón</button>
+        <button class="drawer-sub-item" onclick="setAccent('accent-cyan')"><span class="color-dot" style="background:#00f3ff;"></span> Cyan Eléctrico</button>
+        <button class="drawer-sub-item" onclick="setAccent('accent-yellow')"><span class="color-dot" style="background:#ffe600;"></span> Amarillo Neón</button>
+      </div>
+
+      <!-- 9. MÉTRICAS DEL TEXTO -->
+      <button class="drawer-accordion-btn" onclick="toggleAccordion('acc-6', 'arrow-6')">
+        09. Métricas del Texto <span id="arrow-6">▼</span>
+      </button>
+      <div class="drawer-dropdown-content" id="acc-6">
+        <div class="stats-box" id="statsBox">
+          Palabras: 0<br>Caracteres: 0<br>Lectura: ~0 min
+        </div>
+      </div>
+
+      <!-- ENLACE A CÓDIGO FUENTE DE GITHUB -->
+      <a href="https://github.com/galeed/Meow-Docs-App" target="_blank" class="drawer-sub-item github-link-item">
+        <span>CÓDIGO FUENTE EN GITHUB</span>
+        <svg class="github-icon" viewBox="0 0 24 24">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+      </a>
+
+    </div>
+
+    <!-- ENCABEZADO -->
+    <header>
+      <button class="header-btn" onclick="toggleDrawer()">☰</button>
+      <div class="brand-title">MEOW DOCS</div>
+      <button class="header-btn" id="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
+      <button class="header-btn" style="border-right: none;">GALEED</button>
+    </header>
+
+    <!-- ÁREA CENTRAL DE ESCRITURA -->
+    <div class="main-body">
+      <div class="sidebar-text">
+        <span>MEOW DOCS EDITORIAL WRITER</span>
+      </div>
+      
+      <div class="editor-wrapper" id="editorWrapper">
+        <div class="doc-title" contenteditable="true" id="docTitle" oninput="saveData()">TÍTULO DEL DOCUMENTO</div>
+        <div class="doc-subtitle">Redacta y aplica formato minimalista. Edición fluida multi-documento.</div>
+        
+        <!-- BUSCADOR -->
+        <div class="search-bar" id="searchBar">
+          <input type="text" id="findText" class="search-input" placeholder="Buscar...">
+          <input type="text" id="replaceText" class="search-input" placeholder="Reemplazar con...">
+          <button class="search-btn" onclick="executeReplace()">OK</button>
+        </div>
+
+        <!-- BARRA TELEPROMPTER -->
+        <div class="prompter-bar" id="prompterBar">
+          <span style="font-size:10px;">TELEPROMPTER:</span>
+          <button class="search-btn" onclick="togglePrompterScroll()">PLAY / PAUSA</button>
+          <label style="font-size:10px;">Velocidad:</label>
+          <input type="range" id="prompterSpeed" min="1" max="10" value="3" style="width:80px;">
+        </div>
+
+        <div id="editor" contenteditable="true" oninput="onEditorInput()" onkeyup="handleMarkdownShortcuts(event)" onkeydown="handleKeyDown(event)">
+          Escribe aquí el contenido principal de tu guion, nota o documento...
+        </div>
+      </div>
+    </div>
+
+    <!-- BARRA DE ESTADO / AUTOGUARDADO / PRODUCTIVIDAD -->
+    <div class="status-bar">
+      <span id="saveStatus">Guardado Local</span>
+      <span id="pomoDisplay" style="display:none; color:var(--accent);">🍅 25:00</span>
+      <span>
+        <span id="goalText">Meta: 0%</span>
+        <div class="progress-bar-container"><div class="progress-bar-fill" id="goalBarFill"></div></div>
+      </span>
+      <span id="activeDocName">Doc: Sin Título</span>
+    </div>
+
+    <!-- BARRA INFERIOR COMPACTA -->
+    <div class="bottom-grid">
+      <div class="toolbar-tools-compact">
+        <button class="tool-btn-compact" onclick="execCmd('bold')"><b>B</b></button>
+        <button class="tool-btn-compact" onclick="execCmd('italic')"><i>I</i></button>
+        <button class="tool-btn-compact" onclick="execCmd('underline')"><u>U</u></button>
+        <button class="tool-btn-compact" onclick="highlightSelection()">🖍️</button>
+        <button class="tool-btn-compact" onclick="execCmd('justifyLeft')">←</button>
+        <button class="tool-btn-compact" onclick="execCmd('justifyCenter')">↔</button>
+        <button class="tool-btn-compact" onclick="execCmd('justifyRight')">→</button>
+        <button class="tool-btn-compact" onclick="execCmd('justifyFull')">≡</button>
+      </div>
+
+      <div class="export-wrapper">
+        <div class="export-dropdown" id="exportMenu">
+          <button class="export-option" onclick="exportToWord()">.DOCX</button>
+          <button class="export-option" onclick="exportToPDF()">PDF</button>
+          <button class="export-option" onclick="exportToMarkdown()">.MD</button>
+          <button class="export-option" onclick="exportToText()">.TXT</button>
+        </div>
+        <button class="btn-export-trigger" onclick="toggleExportMenu()">
+          EXPORTAR <span>▲</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- ESTADO GLOBAL ---
+    let currentDocId = 'doc_' + Date.now();
+    let audioCtx = null;
+    let soundEnabled = false;
+    let noiseNode = null;
+    let noiseGain = null;
+    let isNoisePlaying = false;
+
+    let prompterInterval = null;
+    let isPrompterActive = false;
+
+    let pomoTimer = null;
+    let pomoSeconds = 1500;
+    let isPomoRunning = false;
+
+    let wordGoal = 0;
+
+    function initMultiDocStore() {
+      let docsIndex = JSON.parse(localStorage.getItem('meow_docs_index') || '[]');
+      if (docsIndex.length === 0) {
+        docsIndex.push(currentDocId);
+        localStorage.setItem('meow_docs_index', JSON.stringify(docsIndex));
+      } else {
+        currentDocId = docsIndex[0];
+      }
+      renderDocList();
+    }
+
+    function renderDocList() {
+      const docsIndex = JSON.parse(localStorage.getItem('meow_docs_index') || '[]');
+      const container = document.getElementById('docListContainer');
+      container.innerHTML = '';
+
+      docsIndex.forEach((id) => {
+        const title = localStorage.getItem(`${id}_title`) || 'Documento sin título';
+        const isCurrent = id === currentDocId;
+        
+        const item = document.createElement('div');
+        item.className = 'drawer-sub-item';
+        item.style.border = isCurrent ? '1px solid var(--accent)' : '1px solid var(--border)';
+        item.innerHTML = `
+          <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:140px;" onclick="switchDocument('${id}')">${isCurrent ? '▶ ' : ''}${title}</span>
+          <span style="cursor:pointer; color:#ff4444;" onclick="deleteDocument('${id}', event)">✕</span>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function switchDocument(id) {
+      currentDocId = id;
+      loadSavedData();
+      renderDocList();
+      toggleDrawer();
+    }
+
+    function createNewDocInManager() {
+      const newId = 'doc_' + Date.now();
+      let docsIndex = JSON.parse(localStorage.getItem('meow_docs_index') || '[]');
+      docsIndex.unshift(newId);
+      localStorage.setItem('meow_docs_index', JSON.stringify(docsIndex));
+
+      localStorage.setItem(`${newId}_title`, "NUEVO DOCUMENTO");
+      localStorage.setItem(`${newId}_content`, "");
+      localStorage.setItem(`${newId}_font`, "font-helvetica");
+
+      switchDocument(newId);
+    }
+
+    function duplicateCurrentDoc() {
+      const title = document.getElementById('docTitle').innerText;
+      const content = document.getElementById('editor').innerHTML;
+      
+      const newId = 'doc_' + Date.now();
+      let docsIndex = JSON.parse(localStorage.getItem('meow_docs_index') || '[]');
+      docsIndex.unshift(newId);
+      localStorage.setItem('meow_docs_index', JSON.stringify(docsIndex));
+
+      localStorage.setItem(`${newId}_title`, `${title} (COPIA)`);
+      localStorage.setItem(`${newId}_content`, content);
+      
+      switchDocument(newId);
+    }
+
+    function deleteDocument(id, event) {
+      event.stopPropagation();
+      let docsIndex = JSON.parse(localStorage.getItem('meow_docs_index') || '[]');
+      if (docsIndex.length <= 1) {
+        alert("No puedes eliminar el único documento activo.");
+        return;
+      }
+
+      if (confirm("¿Seguro que deseas eliminar este documento?")) {
+        docsIndex = docsIndex.filter(dId => dId !== id);
+        localStorage.setItem('meow_docs_index', JSON.stringify(docsIndex));
+        localStorage.removeItem(`${id}_title`);
+        localStorage.removeItem(`${id}_content`);
+        localStorage.removeItem(`${id}_font`);
+
+        if (currentDocId === id) {
+          currentDocId = docsIndex[0];
+        }
+        loadSavedData();
+        renderDocList();
+      }
+    }
+
+    // --- EFECTOS SONOROS Y AUDIO SINTETIZADO ---
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function toggleSoundFX() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundStatus').innerText = soundEnabled ? 'ON' : 'OFF';
+      if (soundEnabled) initAudio();
+    }
+
+    function handleKeyDown(e) {
+      playKeySound(e.key === 'Enter');
+      handleMarkdownShortcuts(e);
+    }
+
+    function playKeySound(isEnter = false) {
+      if (!soundEnabled) return;
+      initAudio();
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      if (isEnter) {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+      } else {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(120 + Math.random() * 40, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+      }
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + (isEnter ? 0.15 : 0.04));
+    }
+
+    // SINTETIZADOR DE RUIDO DE LLUVIAR/AMBIENTE
+    function toggleAmbientNoise() {
+      initAudio();
+      const statusEl = document.getElementById('noiseStatus');
+
+      if (isNoisePlaying) {
+        if (noiseGain) noiseGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+        setTimeout(() => { if (noiseNode) noiseNode.disconnect(); }, 500);
+        isNoisePlaying = false;
+        statusEl.innerText = 'OFF';
+      } else {
+        const bufferSize = audioCtx.sampleRate * 2;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        let lastOut = 0.0;
+
+        for (let i = 0; i < bufferSize; i++) {
+          let white = Math.random() * 2 - 1;
+          data[i] = (lastOut + (0.02 * white)) / 1.02;
+          lastOut = data[i];
+          data[i] *= 3.5;
+        }
+
+        noiseNode = audioCtx.createBufferSource();
+        noiseNode.buffer = buffer;
+        noiseNode.loop = true;
+
+        noiseGain = audioCtx.createGain();
+        noiseGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+
+        noiseNode.connect(noiseGain);
+        noiseGain.connect(audioCtx.destination);
+        noiseNode.start();
+
+        isNoisePlaying = true;
+        statusEl.innerText = 'ON';
+      }
+      toggleDrawer();
+    }
+
+    // --- TELEPROMPTER ---
+    function togglePrompterBar() {
+      document.getElementById('prompterBar').classList.toggle('open');
+      toggleDrawer();
+    }
+
+    function togglePrompterScroll() {
+      const wrapper = document.getElementById('editorWrapper');
+      if (isPrompterActive) {
+        clearInterval(prompterInterval);
+        isPrompterActive = false;
+      } else {
+        isPrompterActive = true;
+        prompterInterval = setInterval(() => {
+          const speed = parseInt(document.getElementById('prompterSpeed').value, 10);
+          wrapper.scrollTop += speed;
+        }, 50);
+      }
+    }
+
+    // --- POMODORO ---
+    function togglePomodoro() {
+      const pomoDisplay = document.getElementById('pomoDisplay');
+      const pomoStatus = document.getElementById('pomoStatus');
+
+      if (isPomoRunning) {
+        clearInterval(pomoTimer);
+        isPomoRunning = false;
+        pomoDisplay.style.display = 'none';
+        pomoStatus.innerText = 'OFF';
+      } else {
+        isPomoRunning = true;
+        pomoSeconds = 1500;
+        pomoDisplay.style.display = 'inline';
+        pomoStatus.innerText = 'ON';
+
+        pomoTimer = setInterval(() => {
+          pomoSeconds--;
+          let m = Math.floor(pomoSeconds / 60);
+          let s = pomoSeconds % 60;
+          pomoDisplay.innerText = `🍅 ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+          if (pomoSeconds <= 0) {
+            clearInterval(pomoTimer);
+            alert("🍅 ¡Pomodoro completado! Tómate un descanso.");
+            isPomoRunning = false;
+            pomoDisplay.style.display = 'none';
+          }
+        }, 1000);
+      }
+      toggleDrawer();
+    }
+
+    // --- META DE PALABRAS ---
+    function setWordGoal() {
+      const input = prompt("Introduce tu objetivo de palabras para este documento:", "500");
+      if (input !== null) {
+        wordGoal = parseInt(input, 10) || 0;
+        updateStats();
+      }
+      toggleDrawer();
+    }
+
+    // --- RESALTADOR Y CÓDIGO ---
+    function highlightSelection() {
+      const sel = window.getSelection();
+      if (!sel.rangeCount || sel.isCollapsed) return;
+      
+      const span = document.createElement('span');
+      span.className = 'highlight-text';
+      const range = sel.getRangeAt(0);
+      range.surroundContents(span);
+      saveData();
+    }
+
+    function insertCodeBlock() {
+      const codeHTML = `<div class="code-block" contenteditable="true">// Escribe tu código o nota aquí</div><p></p>`;
+      document.execCommand('insertHTML', false, codeHTML);
+      saveData();
+      toggleDrawer();
+    }
+
+    // --- PLANTILLAS ---
+    function loadTemplate(type) {
+      if (!confirm("¿Cargar esta plantilla? Reemplazará el contenido actual.")) return;
+
+      const titleEl = document.getElementById('docTitle');
+      const editorEl = document.getElementById('editor');
+
+      if (type === 'recomendacion') {
+        titleEl.innerText = "CARTA DE RECOMENDACIÓN";
+        editorEl.innerHTML = `
+          <p>Ciudad de México, a 24 de septiembre de 2026.</p>
+          <p><b>A QUIEN CORRESPONDA:</b></p>
+          <p>Por medio de la presente, recomiendo ampliamente a <b>Ben Oni Galeed León Hernández</b>, a quien conozco desde hace años por motivos personales y profesionales.</p>
+          <p>Durante este tiempo, he podido constatar que es una persona honesta, responsable, trabajadora y con excelentes valores éticos. Es alguien confiable y comprometido con sus deberes.</p>
+          <p>Quedo a su disposición para cualquier duda o aclaración.</p>
+          <div class="signature-container" contenteditable="false">
+            <input type="text" class="signature-input" placeholder="Haz clic para firmar..." />
+            <span class="signature-label">Firma Autorizada</span>
+          </div>
+        `;
+      } else if (type === 'guion') {
+        setFontFamily('font-mono');
+        titleEl.innerText = "ESCENA 01 - NOCHE CYBERPUNK";
+        editorEl.innerHTML = `
+          <div><b>EXT. CALLE PRINCIPAL - NOCHE</b></div>
+          <div>Luces neón se reflejan en el asfalto mojado. EL PERSONAJE camina a paso firme.</div>
+          <div style="text-align: center; margin-top: 12px; font-weight: bold;">JOËL</div>
+          <div style="text-align: center; margin-bottom: 12px;">(murmurando)</div>
+          <div>Todo está listo para la emisión.</div>
+        `;
+      } else if (type === 'comunicado') {
+        titleEl.innerText = "COMUNICADO EDITORIAL";
+        editorEl.innerHTML = `
+          <p><b>PARA DIFUSIÓN INMEDIATA</b></p>
+          <p>Nos complace anunciar el nuevo lanzamiento de herramientas digitales integradas para edición minimalista.</p>
+          <p>Este sistema combina velocidad, flexibilidad y estética cyberpunk monocromática.</p>
+        `;
+      } else {
+        titleEl.innerText = "DOCUMENTO SIN TÍTULO";
+        editorEl.innerHTML = "";
+      }
+
+      saveData();
+      toggleDrawer();
+    }
+
+    function handleMarkdownShortcuts(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+        const range = selection.getRangeAt(0);
+        const node = range.startContainer;
+        const text = node.textContent || '';
+
+        if (text.startsWith('# ')) {
+          node.textContent = text.replace('# ', '');
+          document.execCommand('formatBlock', false, 'H2');
+        } else if (text.startsWith('> ')) {
+          node.textContent = text.replace('> ', '');
+          document.execCommand('formatBlock', false, 'BLOCKQUOTE');
+        }
+      }
+    }
+
+    function setLineHeight(val) {
+      document.documentElement.style.setProperty('--editor-line-height', val);
+      toggleDrawer();
+    }
+
+    function togglePageBreaks() {
+      document.getElementById('editor').classList.toggle('page-break-sim');
+      toggleDrawer();
+    }
+
+    function printDocument() {
+      window.print();
+    }
+
+    function triggerImportFile() {
+      document.getElementById('fileImportInput').click();
+    }
+
+    function importFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        document.getElementById('docTitle').innerText = file.name.replace(/\.[^/.]+$/, "").toUpperCase();
+        document.getElementById('editor').innerText = text;
+        saveData();
+        toggleDrawer();
+      };
+      reader.readAsText(file);
+    }
+
+    function exportToMarkdown() {
+      document.getElementById('exportMenu').classList.remove('show');
+      const title = document.getElementById('docTitle').innerText;
+      const text = document.getElementById('editor').innerText;
+      const mdContent = `# ${title}\n\n${text}`;
+      
+      downloadBlob(mdContent, `${title.toLowerCase().replace(/\s+/g, '_')}.md`, 'text/markdown');
+    }
+
+    function exportToText() {
+      document.getElementById('exportMenu').classList.remove('show');
+      const title = document.getElementById('docTitle').innerText;
+      const text = document.getElementById('editor').innerText;
+      const fullText = `${title}\n${'='.repeat(title.length)}\n\n${text}`;
+
+      downloadBlob(fullText, `${title.toLowerCase().replace(/\s+/g, '_')}.txt`, 'text/plain');
+    }
+
+    function downloadBlob(content, filename, contentType) {
+      const blob = new Blob([content], { type: contentType });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    }
+
+    function execCmd(command, value = null) {
+      document.execCommand(command, false, value);
+      saveData();
+    }
+
+    function toggleDrawer() {
+      document.getElementById('drawerMenu').classList.toggle('open');
+    }
+
+    function toggleAccordion(contentId, arrowId) {
+      const content = document.getElementById(contentId);
+      const arrow = document.getElementById(arrowId);
+      const isOpen = content.classList.contains('show');
+      
+      content.classList.toggle('show');
+      arrow.innerText = isOpen ? '▼' : '▲';
+    }
+
+    function insertSignatureField() {
+      const editor = document.getElementById('editor');
+      const signatureHTML = `
+        <div class="signature-container" contenteditable="false">
+          <input type="text" class="signature-input" placeholder="Haz clic para firmar..." />
+          <span class="signature-label">Firma Autorizada</span>
+        </div>
+      `;
+      editor.insertAdjacentHTML('beforeend', signatureHTML);
+      toggleDrawer();
+      saveData();
+    }
+
+    function onEditorInput() {
+      updateStats();
+      saveData();
+    }
+
+    function toggleZenMode() {
+      document.getElementById('appFrame').classList.toggle('zen-mode');
+      if (document.getElementById('drawerMenu').classList.contains('open')) {
+        toggleDrawer();
+      }
+    }
+
+    function saveData() {
+      const title = document.getElementById('docTitle').innerText;
+      const content = document.getElementById('editor').innerHTML;
+      const currentFont = document.getElementById('editor').className;
+      const activeAccent = document.body.className;
+      
+      localStorage.setItem(`${currentDocId}_title`, title);
+      localStorage.setItem(`${currentDocId}_content`, content);
+      localStorage.setItem(`${currentDocId}_font`, currentFont);
+      localStorage.setItem('meow_doc_accent', activeAccent);
+      localStorage.setItem(`${currentDocId}_goal`, wordGoal);
+
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+      document.getElementById('saveStatus').innerText = `Guardado a las ${timeStr}`;
+      document.getElementById('activeDocName').innerText = `Doc: ${title}`;
+    }
+
+    function loadSavedData() {
+      const savedTitle = localStorage.getItem(`${currentDocId}_title`);
+      const savedContent = localStorage.getItem(`${currentDocId}_content`);
+      const savedFont = localStorage.getItem(`${currentDocId}_font`);
+      const savedAccent = localStorage.getItem('meow_doc_accent');
+      wordGoal = parseInt(localStorage.getItem(`${currentDocId}_goal`) || '0', 10);
+      
+      document.getElementById('docTitle').innerText = savedTitle || "TÍTULO DEL DOCUMENTO";
+      document.getElementById('editor').innerHTML = savedContent || "";
+      if (savedFont) document.getElementById('editor').className = savedFont;
+      if (savedAccent) document.body.className = savedAccent;
+
+      updateStats();
+      document.getElementById('activeDocName').innerText = `Doc: ${document.getElementById('docTitle').innerText}`;
+    }
+
+    function toggleSearchBar() {
+      document.getElementById('searchBar').classList.toggle('open');
+      toggleDrawer();
+    }
+
+    function executeReplace() {
+      const findVal = document.getElementById('findText').value;
+      const replaceVal = document.getElementById('replaceText').value;
+      if (!findVal) return;
+
+      const editor = document.getElementById('editor');
+      const regex = new RegExp(findVal, 'g');
+      editor.innerHTML = editor.innerHTML.replace(regex, replaceVal);
+      saveData();
+      alert('Reemplazo completado');
+    }
+
+    function startSpeechRecognition() {
+      toggleDrawer();
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert("Tu navegador no soporta dictado por voz.");
+        return;
+      }
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'es-MX';
+      recognition.interimResults = false;
+
+      recognition.onstart = function() {
+        alert("Escuchando... Habla ahora.");
+      };
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.execCommand('insertText', false, transcript + " ");
+        saveData();
+      };
+
+      recognition.start();
+    }
+
+    function insertTimestamp() {
+      const now = new Date();
+      const timestamp = `[${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}] `;
+      document.execCommand('insertText', false, timestamp);
+      toggleDrawer();
+      saveData();
+    }
+
+    function formatScript() {
+      setFontFamily('font-mono');
+      const editor = document.getElementById('editor');
+      const lines = editor.innerText.split('\n');
+      const formatted = lines.map(line => {
+        const trimmed = line.trim();
+        if (trimmed === trimmed.toUpperCase() && trimmed.length > 2 && !trimmed.startsWith('ESCENA')) {
+          return `<div style="text-align: center; margin-top: 12px; font-weight: bold;">${trimmed}</div>`;
+        }
+        return `<div>${line}</div>`;
+      }).join('');
+      editor.innerHTML = formatted;
+      toggleDrawer();
+      saveData();
+    }
+
+    function setFontFamily(className) {
+      const editor = document.getElementById('editor');
+      editor.className = className;
+      toggleDrawer();
+      saveData();
+    }
+
+    function setAccent(accentClass) {
+      const isLight = document.body.classList.contains('light-mode');
+      document.body.className = '';
+      if (isLight) document.body.classList.add('light-mode');
+      if (accentClass) document.body.classList.add(accentClass);
+      saveData();
+    }
+
+    function clearEditor() {
+      if (confirm("¿Vaciar todo el contenido del lienzo?")) {
+        document.getElementById('editor').innerHTML = "";
+        saveData();
+        updateStats();
+        toggleDrawer();
+      }
+    }
+
+    function copyToClipboard() {
+      const text = document.getElementById('editor').innerText;
+      navigator.clipboard.writeText(text);
+      alert("Texto copiado al portapapeles.");
+      toggleDrawer();
+    }
+
+    function updateStats() {
+      const text = document.getElementById('editor').innerText.trim();
+      const words = text ? text.split(/\s+/).length : 0;
+      const chars = text.length;
+      const readTime = Math.ceil(words / 200);
+
+      document.getElementById('statsBox').innerHTML = 
+        `Palabras: ${words}<br>Caracteres: ${chars}<br>Lectura: ~${readTime} min`;
+
+      // Actualizar progreso de meta de palabras
+      if (wordGoal > 0) {
+        const pct = Math.min(Math.round((words / wordGoal) * 100), 100);
+        document.getElementById('goalText').innerText = `Meta: ${pct}%`;
+        document.getElementById('goalBarFill').style.width = `${pct}%`;
+      } else {
+        document.getElementById('goalText').innerText = `Meta: N/A`;
+        document.getElementById('goalBarFill').style.width = `0%`;
+      }
+    }
+
+    function toggleExportMenu() {
+      document.getElementById('exportMenu').classList.toggle('show');
+    }
+
+    document.addEventListener('click', function(event) {
+      const wrapper = document.querySelector('.export-wrapper');
+      if (wrapper && !wrapper.contains(event.target)) {
+        document.getElementById('exportMenu').classList.remove('show');
+      }
+    });
+
+    function toggleTheme() {
+      const body = document.body;
+      const toggleBtn = document.getElementById('theme-toggle');
+      body.classList.toggle('light-mode');
+      toggleBtn.innerText = body.classList.contains('light-mode') ? '☀️' : '🌙';
+      saveData();
+    }
+
+    function exportToPDF() {
+      document.getElementById('exportMenu').classList.remove('show');
+      const element = document.getElementById('editor');
+      const title = document.getElementById('docTitle').innerText;
+      
+      const computedStyle = window.getComputedStyle(element);
+      const activeFontFamily = computedStyle.fontFamily;
+      const activeFontSize = computedStyle.fontSize;
+
+      const container = document.createElement('div');
+      container.style.padding = '30px';
+      container.style.color = '#000000';
+      container.style.backgroundColor = '#ffffff';
+      container.style.fontFamily = activeFontFamily;
+      container.style.fontSize = activeFontSize;
+      container.style.lineHeight = '1.6';
+
+      container.innerHTML = `
+        <h1 style="font-family: 'Oswald', sans-serif; text-transform: uppercase; margin-bottom: 8px; font-size: 24px; color: #000000;">${title}</h1>
+        <hr style="border: 0; border-top: 1px solid #000000; margin-bottom: 20px;" />
+        <div style="font-family: ${activeFontFamily}; font-size: ${activeFontSize};">
+          ${element.innerHTML}
+        </div>
+      `;
+
+      const opt = {
+        margin:       0.6,
+        filename:     `${title.toLowerCase().replace(/\s+/g, '_') || 'meow_docs'}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(container).save();
+    }
+
+    function exportToWord() {
+      document.getElementById('exportMenu').classList.remove('show');
+      const content = document.getElementById('editor').innerText;
+      const title = document.getElementById('docTitle').innerText;
+
+      const doc = new docx.Document({
+        sections: [{
+          properties: {},
+          children: [
+            new docx.Paragraph({
+              children: [new docx.TextRun({ text: title, bold: true, size: 36 })],
+            }),
+            new docx.Paragraph({ children: [new docx.TextRun({ text: "", break: 1 })] }),
+            ...content.split('\n').map(line => {
+              return new docx.Paragraph({
+                children: [new docx.TextRun({ text: line, size: 24 })]
+              });
+            })
+          ]
+        }]
+      });
+
+      docx.Packer.toBlob(doc).then(blob => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${title.toLowerCase().replace(/\s+/g, '_') || 'meow_docs'}.docx`;
+        link.click();
+      });
+    }
+
+    // Inicializar almacenamiento y cargar documento
+    initMultiDocStore();
+    loadSavedData();
+  </script>
+</body>
+</html>
