@@ -24,7 +24,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            overflow: hidden; /* Evita scroll en el inicio */
+            overflow: hidden; 
             height: 100vh;
         }
 
@@ -239,52 +239,71 @@
         .app-card.slides:hover .app-title { color: var(--slides-color); }
 
 
-        /* --- VENTANAS EMERGENTES (OVERLAYS) --- */
+        /* --- VENTANAS EMERGENTES (OVERLAYS CORREGIDOS) --- */
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(7, 7, 7, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(7, 7, 7, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 100;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
-            padding: 2rem;
+            padding: 1rem; /* Margen base de la pantalla */
         }
 
         .overlay.active { opacity: 1; pointer-events: auto; }
 
+        /* La caja que simula la ventana */
+        .overlay-content {
+            background-color: #0c0c0c;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            max-width: 650px;
+            width: 100%;
+            max-height: 85vh; /* Altura máxima para permitir scroll */
+            overflow-y: auto; /* Añade scroll si el texto es muy largo */
+            position: relative;
+            padding: 3rem 2.5rem 2.5rem 2.5rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            text-align: left;
+        }
+
+        /* Personalización de barra de scroll para la ventana */
+        .overlay-content::-webkit-scrollbar { width: 8px; }
+        .overlay-content::-webkit-scrollbar-track { background: transparent; }
+        .overlay-content::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        .overlay-content::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Botón cerrar integrado dentro de la ventana */
         .overlay-close {
             position: absolute;
-            top: 30px; right: 40px;
-            font-size: 3rem;
+            top: 15px; right: 20px;
+            font-size: 2.5rem;
             color: var(--text-color);
             cursor: pointer;
             font-weight: 300;
             transition: transform 0.3s;
+            line-height: 1;
+            z-index: 10;
         }
         .overlay-close:hover { transform: scale(1.2) rotate(90deg); }
-
-        /* Contenido de Overlays */
-        .overlay-content { max-width: 800px; width: 100%; text-align: left; }
         
-        .overlay-content h2 { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+        .overlay-content h2 { font-size: 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
         
         .app-info-block { margin-bottom: 2rem; }
-        .app-info-block h3 { font-family: 'Courier New', Courier, monospace; font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .app-info-block h3 { font-family: 'Courier New', Courier, monospace; font-size: 1.4rem; margin-bottom: 0.8rem; }
         .app-info-block.docs h3 { color: var(--docs-color); }
         .app-info-block.sheets h3 { color: var(--sheets-color); }
         .app-info-block.slides h3 { color: var(--slides-color); }
-        .app-info-block p { font-size: 1.1rem; line-height: 1.6; color: #ccc; }
+        .app-info-block p { font-size: 1.05rem; line-height: 1.6; color: #ccc; }
 
-        .about-text { font-size: 1.2rem; line-height: 1.8; margin-bottom: 2rem; font-family: 'Courier New', Courier, monospace;}
+        .about-text { font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem; font-family: 'Courier New', Courier, monospace;}
         
-        /* Botón de GitHub */
         .github-btn {
             display: inline-flex;
             align-items: center;
@@ -293,7 +312,7 @@
             background-color: var(--text-color);
             color: var(--bg-color);
             text-decoration: none;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             border-radius: 5px;
             transition: background 0.3s, transform 0.2s;
@@ -301,10 +320,9 @@
         .github-btn:hover { background-color: #ccc; transform: translateY(-3px); }
         .github-btn svg { width: 24px; height: 24px; fill: currentColor; }
 
-        /* --- RESPONSIVIDAD PARA MÓVILES (Adaptación de márgenes) --- */
+        /* --- RESPONSIVIDAD PARA MÓVILES --- */
         @media (max-width: 900px) {
             #intro-screen {
-                /* Se reorganiza la cuadrícula para pantallas verticales */
                 grid-template-columns: 40px 1fr;
                 grid-template-rows: 60px 1fr 1.2fr 80px; 
             }
@@ -312,24 +330,29 @@
             .hero-text { 
                 grid-column: 2; grid-row: 2; 
                 border-right: none; border-bottom: 1px solid var(--border-color);
-                padding: 1.5rem; /* Margen adaptado */
+                padding: 1.5rem; 
             }
             .hero-visual { grid-column: 2; grid-row: 3; }
-            .floating-img { width: 55%; } /* Imágenes más grandes en móvil */
+            .floating-img { width: 55%; } 
             .img-1 { top: 5%; left: 10%; }
             .img-2 { top: 40%; left: 35%; }
             .img-3 { top: 60%; left: 5%; }
             
             .bottom-bar { grid-column: 1 / 3; grid-row: 4; }
-            .price-box { display: none; } /* Ocultar precio en móviles para dar espacio al botón */
+            .price-box { display: none; } 
             .btn-iniciar { width: 40%; font-size: 1.5rem; }
-            
-            .overlay-content h2 { text-align: center; }
-            .overlay-close { top: 15px; right: 20px; font-size: 2.5rem; }
             
             #main-menu { padding: 4rem 1rem; }
             .app-card { width: 100%; max-width: 350px; }
             .app-card img { height: 350px; }
+
+            /* Ajustes precisos para las ventanas en móvil */
+            .overlay-content { 
+                width: 95%; 
+                padding: 3.5rem 1.5rem 2rem 1.5rem; /* Asegura espacio alrededor del texto */
+            }
+            .overlay-close { top: 10px; right: 15px; } /* Reposiciona la 'X' para no estorbar */
+            .overlay-content h2 { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -391,8 +414,9 @@
 
     <!-- OVERLAY 1: INFORMACIÓN DE APPS (Hamburguesa) -->
     <div class="overlay" id="overlay-apps">
-        <div class="overlay-close" id="close-apps">&times;</div>
+        <!-- El botón de cierre ahora está DENTRO del marco del contenido -->
         <div class="overlay-content">
+            <div class="overlay-close" id="close-apps">&times;</div>
             <h2>NUESTRAS APLICACIONES</h2>
             
             <div class="app-info-block docs">
@@ -414,8 +438,9 @@
 
     <!-- OVERLAY 2: ABOUT Y GITHUB -->
     <div class="overlay" id="overlay-about">
-        <div class="overlay-close" id="close-about">&times;</div>
+        <!-- El botón de cierre ahora está DENTRO del marco del contenido -->
         <div class="overlay-content" style="text-align: center;">
+            <div class="overlay-close" id="close-about">&times;</div>
             <h2>ABOUT</h2>
             <div class="about-text">
                 <p><strong>Meow Office App</strong></p>
@@ -425,7 +450,6 @@
             </div>
             
             <a href="https://github.com/galeed/Meow-Office-App" target="_blank" class="github-btn">
-                <!-- Icono SVG de GitHub -->
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
                 </svg>
@@ -436,7 +460,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Lógica de transición principal
             const btnIniciar = document.getElementById('iniciar-btn');
             const introScreen = document.getElementById('intro-screen');
             const mainMenu = document.getElementById('main-menu');
@@ -446,7 +469,7 @@
                 introScreen.classList.add('intro-hidden');
                 setTimeout(() => {
                     introScreen.style.display = 'none';
-                    body.style.overflow = 'auto'; // Habilitar scroll para el menú principal
+                    body.style.overflow = 'auto';
                     
                     mainMenu.style.display = 'flex';
                     void mainMenu.offsetWidth; 
@@ -454,42 +477,22 @@
                 }, 800); 
             });
 
-            // Lógica de Overlays (Ventanas emergentes)
             const btnHamburger = document.getElementById('btn-hamburger');
             const btnAbout = document.getElementById('btn-about');
-            
             const overlayApps = document.getElementById('overlay-apps');
             const overlayAbout = document.getElementById('overlay-about');
-            
             const closeApps = document.getElementById('close-apps');
             const closeAbout = document.getElementById('close-about');
 
-            // Abrir overlays
-            btnHamburger.addEventListener('click', () => {
-                overlayApps.classList.add('active');
-            });
-            
-            btnAbout.addEventListener('click', () => {
-                overlayAbout.classList.add('active');
-            });
+            btnHamburger.addEventListener('click', () => { overlayApps.classList.add('active'); });
+            btnAbout.addEventListener('click', () => { overlayAbout.classList.add('active'); });
 
-            // Cerrar overlays con la X
-            closeApps.addEventListener('click', () => {
-                overlayApps.classList.remove('active');
-            });
-            
-            closeAbout.addEventListener('click', () => {
-                overlayAbout.classList.remove('active');
-            });
+            closeApps.addEventListener('click', () => { overlayApps.classList.remove('active'); });
+            closeAbout.addEventListener('click', () => { overlayAbout.classList.remove('active'); });
 
-            // Cerrar overlays al hacer clic fuera del contenido (en el fondo desenfocado)
             window.addEventListener('click', (e) => {
-                if (e.target === overlayApps) {
-                    overlayApps.classList.remove('active');
-                }
-                if (e.target === overlayAbout) {
-                    overlayAbout.classList.remove('active');
-                }
+                if (e.target === overlayApps) { overlayApps.classList.remove('active'); }
+                if (e.target === overlayAbout) { overlayAbout.classList.remove('active'); }
             });
         });
     </script>
