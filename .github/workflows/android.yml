@@ -45,8 +45,8 @@ jobs:
       - name: Inicializar Capacitor y Agregar Plataforma Android
         run: |
           mkdir -p dist
-          cp index.html manifest.json dist/ 2>/dev/null || cp index.html dist/
-          npx cap init "Meow Docs App" "com.meowdocs.app" --web-dir dist
+          cp index.html meow_docs.html meow_sheets.html meow_slides.html image.PNG image_2.PNG image_3.PNG manifest.json dist/ 7>/dev/null || cp index.html dist/
+          npx cap init "Meow Office App" "com.meowoffice.app" --web-dir dist
           npx cap add android
           npx cap copy android
           npx cap sync android
