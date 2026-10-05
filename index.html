@@ -24,11 +24,11 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            overflow: hidden; /* Evitar scroll durante el inicio */
+            overflow: hidden; /* Evita scroll en el inicio */
             height: 100vh;
         }
 
-        /* --- PANTALLA DE INICIO (ESTÉTICA A24) --- */
+        /* --- PANTALLA DE INICIO --- */
         #intro-screen {
             display: grid;
             grid-template-columns: 40px 1fr 1fr;
@@ -43,12 +43,11 @@
             z-index: 10;
         }
 
-        /* Ocultar el intro cuando se inicia */
         .intro-hidden {
             opacity: 0;
-            filter: blur(10px);
+            filter: blur(15px);
             pointer-events: none;
-            transform: scale(0.98);
+            transform: scale(0.95);
         }
 
         /* Barra Superior */
@@ -69,24 +68,28 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             cursor: pointer;
+            transition: background 0.2s;
         }
-        .hamburger span { display: block; width: 20px; height: 1px; background: var(--text-color); }
+        .hamburger:hover { background: #222; }
+        .hamburger span { display: block; width: 18px; height: 1.5px; background: var(--text-color); }
 
-        .logo { font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; }
+        .logo { font-size: 1.2rem; font-weight: bold; letter-spacing: 3px; padding-left: 20px;}
 
         .top-links { height: 100%; display: flex; }
         .top-links div {
             height: 100%;
-            padding: 0 20px;
+            padding: 0 25px;
             border-left: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             font-size: 0.8rem;
             font-family: 'Courier New', Courier, monospace;
             cursor: pointer;
+            transition: background 0.2s, color 0.2s;
         }
+        .top-links div:hover { background: var(--text-color); color: var(--bg-color); }
 
         /* Barra Lateral Izquierda */
         .sidebar {
@@ -110,8 +113,8 @@
             border-right: 1px solid var(--border-color);
             display: flex;
             align-items: flex-end;
-            padding: 2rem;
-            font-size: clamp(3rem, 7vw, 7rem);
+            padding: 2rem 3rem;
+            font-size: clamp(2.5rem, 6vw, 7rem);
             line-height: 0.85;
             font-weight: 700;
             letter-spacing: -2px;
@@ -123,34 +126,24 @@
             grid-row: 2;
             position: relative;
             overflow: hidden;
-            background: radial-gradient(circle at center, #1a1a1a 0%, var(--bg-color) 80%);
+            background: radial-gradient(circle at center, #111 0%, var(--bg-color) 80%);
         }
 
         .floating-img {
             position: absolute;
-            width: 50%;
+            width: 45%;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             border: 1px solid var(--border-color);
             border-radius: 4px;
         }
 
-        /* Animaciones para simular el efecto del link */
-        .img-1 { top: 5%; left: 15%; animation: float1 12s infinite alternate ease-in-out; z-index: 3; }
+        .img-1 { top: 10%; left: 15%; animation: float1 12s infinite alternate ease-in-out; z-index: 3; }
         .img-2 { top: 35%; left: 40%; animation: float2 15s infinite alternate ease-in-out; z-index: 2; }
-        .img-3 { top: 55%; left: 10%; animation: float3 18s infinite alternate ease-in-out; z-index: 1; }
+        .img-3 { top: 55%; left: 15%; animation: float3 18s infinite alternate ease-in-out; z-index: 1; }
 
-        @keyframes float1 { 
-            0% { transform: translateY(0px) rotate(-2deg); } 
-            100% { transform: translateY(40px) rotate(3deg); } 
-        }
-        @keyframes float2 { 
-            0% { transform: translateY(30px) rotate(4deg); } 
-            100% { transform: translateY(-30px) rotate(-1deg); } 
-        }
-        @keyframes float3 { 
-            0% { transform: translateY(-20px) rotate(-3deg); } 
-            100% { transform: translateY(50px) rotate(2deg); } 
-        }
+        @keyframes float1 { 0% { transform: translateY(0px) rotate(-2deg); } 100% { transform: translateY(30px) rotate(3deg); } }
+        @keyframes float2 { 0% { transform: translateY(20px) rotate(4deg); } 100% { transform: translateY(-30px) rotate(-1deg); } }
+        @keyframes float3 { 0% { transform: translateY(-20px) rotate(-3deg); } 100% { transform: translateY(40px) rotate(2deg); } }
 
         /* Barra Inferior */
         .bottom-bar {
@@ -169,44 +162,43 @@
             justify-content: center;
             padding: 0 20px;
         }
-        .bottom-info p { font-size: 0.8rem; margin-bottom: 5px; }
+        .bottom-info p { font-size: 0.7rem; margin-bottom: 5px; color: #888;}
         .bottom-info h2 { font-size: 1rem; font-weight: normal; }
 
         .price-box {
-            width: 200px;
+            width: 150px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-right: 1px solid var(--border-color);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: #888;
         }
 
         .btn-iniciar {
-            width: 250px;
+            width: 30%;
+            min-width: 150px;
             background-color: var(--text-color);
             color: var(--bg-color);
             border: none;
-            font-size: 2.5rem;
+            font-size: clamp(1.2rem, 2vw, 2.5rem);
             font-weight: bold;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             cursor: pointer;
-            transition: background 0.3s, color 0.3s;
+            transition: background 0.3s;
         }
         .btn-iniciar:hover { background-color: #cccccc; }
 
         /* --- MENÚ PRINCIPAL (LISTA DE APPS) --- */
         #main-menu {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
             display: none;
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 3rem;
+            gap: 2rem;
             padding: 2rem;
             opacity: 0;
             z-index: 5;
@@ -214,71 +206,130 @@
             overflow-y: auto;
         }
 
-        #main-menu.visible {
-            display: flex;
-            animation: fadeInMenu 1s forwards 0.3s;
-        }
-
+        #main-menu.visible { display: flex; animation: fadeInMenu 0.8s forwards 0.2s; }
         @keyframes fadeInMenu { to { opacity: 1; } }
 
         .app-card {
             display: flex;
             flex-direction: column;
-            width: 320px;
+            width: 300px;
             text-decoration: none;
             color: var(--text-color);
             border: 1px solid var(--border-color);
             background-color: #000;
             transition: all 0.4s ease;
             opacity: 0;
-            transform: translateY(40px);
+            transform: translateY(30px);
         }
 
-        #main-menu.visible .app-card:nth-child(1) { animation: slideUpFade 0.7s forwards 0.4s; }
-        #main-menu.visible .app-card:nth-child(2) { animation: slideUpFade 0.7s forwards 0.6s; }
-        #main-menu.visible .app-card:nth-child(3) { animation: slideUpFade 0.7s forwards 0.8s; }
+        #main-menu.visible .app-card:nth-child(1) { animation: slideUpFade 0.6s forwards 0.3s; }
+        #main-menu.visible .app-card:nth-child(2) { animation: slideUpFade 0.6s forwards 0.5s; }
+        #main-menu.visible .app-card:nth-child(3) { animation: slideUpFade 0.6s forwards 0.7s; }
 
         @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
 
-        .app-card img {
-            width: 100%;
-            height: 500px;
-            object-fit: cover;
-            border-bottom: 1px solid var(--border-color);
-            transition: all 0.4s ease;
-        }
+        .app-card img { width: 100%; height: 400px; object-fit: cover; border-bottom: 1px solid var(--border-color); transition: all 0.4s ease; }
+        .app-title { padding: 20px; text-align: center; font-size: 1.1rem; font-family: 'Courier New', Courier, monospace; font-weight: bold; }
 
-        .app-title {
-            padding: 20px;
-            text-align: center;
-            font-size: 1.2rem;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            letter-spacing: 0.1rem;
-        }
-
-        /* Efectos Hover */
-        .app-card.docs:hover { border-color: var(--docs-color); transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0, 229, 255, 0.1); }
+        .app-card.docs:hover { border-color: var(--docs-color); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0, 229, 255, 0.15); }
         .app-card.docs:hover .app-title { color: var(--docs-color); }
-        
-        .app-card.sheets:hover { border-color: var(--sheets-color); transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0, 255, 65, 0.1); }
+        .app-card.sheets:hover { border-color: var(--sheets-color); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0, 255, 65, 0.15); }
         .app-card.sheets:hover .app-title { color: var(--sheets-color); }
-        
-        .app-card.slides:hover { border-color: var(--slides-color); transform: translateY(-10px); box-shadow: 0 10px 30px rgba(255, 170, 0, 0.1); }
+        .app-card.slides:hover { border-color: var(--slides-color); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(255, 170, 0, 0.15); }
         .app-card.slides:hover .app-title { color: var(--slides-color); }
 
-        /* Responsividad */
+
+        /* --- VENTANAS EMERGENTES (OVERLAYS) --- */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(7, 7, 7, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            padding: 2rem;
+        }
+
+        .overlay.active { opacity: 1; pointer-events: auto; }
+
+        .overlay-close {
+            position: absolute;
+            top: 30px; right: 40px;
+            font-size: 3rem;
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: 300;
+            transition: transform 0.3s;
+        }
+        .overlay-close:hover { transform: scale(1.2) rotate(90deg); }
+
+        /* Contenido de Overlays */
+        .overlay-content { max-width: 800px; width: 100%; text-align: left; }
+        
+        .overlay-content h2 { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+        
+        .app-info-block { margin-bottom: 2rem; }
+        .app-info-block h3 { font-family: 'Courier New', Courier, monospace; font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .app-info-block.docs h3 { color: var(--docs-color); }
+        .app-info-block.sheets h3 { color: var(--sheets-color); }
+        .app-info-block.slides h3 { color: var(--slides-color); }
+        .app-info-block p { font-size: 1.1rem; line-height: 1.6; color: #ccc; }
+
+        .about-text { font-size: 1.2rem; line-height: 1.8; margin-bottom: 2rem; font-family: 'Courier New', Courier, monospace;}
+        
+        /* Botón de GitHub */
+        .github-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 30px;
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .github-btn:hover { background-color: #ccc; transform: translateY(-3px); }
+        .github-btn svg { width: 24px; height: 24px; fill: currentColor; }
+
+        /* --- RESPONSIVIDAD PARA MÓVILES (Adaptación de márgenes) --- */
         @media (max-width: 900px) {
             #intro-screen {
+                /* Se reorganiza la cuadrícula para pantallas verticales */
                 grid-template-columns: 40px 1fr;
-                grid-template-rows: 60px 1fr 1fr 100px;
+                grid-template-rows: 60px 1fr 1.2fr 80px; 
             }
             .top-bar { grid-column: 1 / 3; }
-            .hero-text { grid-column: 2; grid-row: 2; border-right: none; font-size: 3rem; }
+            .hero-text { 
+                grid-column: 2; grid-row: 2; 
+                border-right: none; border-bottom: 1px solid var(--border-color);
+                padding: 1.5rem; /* Margen adaptado */
+            }
             .hero-visual { grid-column: 2; grid-row: 3; }
+            .floating-img { width: 55%; } /* Imágenes más grandes en móvil */
+            .img-1 { top: 5%; left: 10%; }
+            .img-2 { top: 40%; left: 35%; }
+            .img-3 { top: 60%; left: 5%; }
+            
             .bottom-bar { grid-column: 1 / 3; grid-row: 4; }
-            .price-box { display: none; }
-            .btn-iniciar { width: 150px; font-size: 1.5rem; }
+            .price-box { display: none; } /* Ocultar precio en móviles para dar espacio al botón */
+            .btn-iniciar { width: 40%; font-size: 1.5rem; }
+            
+            .overlay-content h2 { text-align: center; }
+            .overlay-close { top: 15px; right: 20px; font-size: 2.5rem; }
+            
+            #main-menu { padding: 4rem 1rem; }
+            .app-card { width: 100%; max-width: 350px; }
+            .app-card img { height: 350px; }
         }
     </style>
 </head>
@@ -286,28 +337,25 @@
 
     <!-- Pantalla inicial con diseño de cuadrícula -->
     <div id="intro-screen">
-        
         <div class="top-bar">
-            <div class="hamburger">
+            <!-- Hamburguesa -->
+            <div class="hamburger" id="btn-hamburger">
                 <span></span><span></span><span></span>
             </div>
             <div class="logo">MEOW</div>
             <div class="top-links">
-                <div>ABOUT</div>
-                <div>GALEED</div>
+                <!-- Botón About -->
+                <div id="btn-about">ABOUT</div>
             </div>
         </div>
 
-        <div class="sidebar">
-            MEOW OFFICE SUITE
-        </div>
+        <div class="sidebar">MEOW OFFICE SUITE</div>
 
         <div class="hero-text">
             YOUR<br>TICKET<br>TO<br>EVERY-<br>THING<br>MEOW
         </div>
 
         <div class="hero-visual">
-            <!-- Las 3 imágenes flotando con la extensión correcta -->
             <img src="image.PNG" alt="Docs" class="floating-img img-1">
             <img src="image_2.PNG" alt="Sheets" class="floating-img img-2">
             <img src="image_3.PNG" alt="Slides" class="floating-img img-3">
@@ -316,57 +364,132 @@
         <div class="bottom-bar">
             <div class="bottom-info">
                 <p>BENEFITS INCLUDE:</p>
-                <h2>01 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OFFICE TOOLS</h2>
+                <h2>01 &nbsp;&nbsp;&nbsp; OFFICE TOOLS</h2>
             </div>
             <div class="price-box">
-                FREE <span style="font-size: 0.8rem; margin-left: 5px;">/USER</span>
+                FREE <span style="font-size: 0.7rem; margin-left: 5px;">/USER</span>
             </div>
-            <!-- Botón de inicio modificado -->
             <button id="iniciar-btn" class="btn-iniciar">INICIAR</button>
         </div>
-
     </div>
 
-    <!-- Menú de lista de aplicaciones que aparece tras hacer clic -->
+    <!-- Menú de lista de aplicaciones que aparece tras hacer clic en Iniciar -->
     <div id="main-menu">
-        
         <a href="meow_docs.html" class="app-card docs">
             <img src="image.PNG" alt="Meow Docs">
             <div class="app-title">MEOW DOCS</div>
         </a>
-
         <a href="meow_sheets.html" class="app-card sheets">
             <img src="image_2.PNG" alt="Meow Sheets">
             <div class="app-title">MEOW SHEETS PRO</div>
         </a>
-
         <a href="meow_slides.html" class="app-card slides">
             <img src="image_3.PNG" alt="Meow Slides">
             <div class="app-title">MEOW SLIDES V3.0</div>
         </a>
+    </div>
 
+    <!-- OVERLAY 1: INFORMACIÓN DE APPS (Hamburguesa) -->
+    <div class="overlay" id="overlay-apps">
+        <div class="overlay-close" id="close-apps">&times;</div>
+        <div class="overlay-content">
+            <h2>NUESTRAS APLICACIONES</h2>
+            
+            <div class="app-info-block docs">
+                <h3>MEOW DOCS</h3>
+                <p>Procesador de textos diseñado para la máxima fluidez. Crea, edita y da formato a tus escritos en un entorno minimalista sin distracciones. Al finalizar, exporta tus archivos directamente en formato <strong>.docx</strong>, dejándolos listos para compartir, imprimir o colaborar en otras plataformas.</p>
+            </div>
+            
+            <div class="app-info-block sheets">
+                <h3>MEOW SHEETS PRO</h3>
+                <p>Potente herramienta de hojas de cálculo con una estética de terminal limpia. Gestiona datos, realiza cálculos matemáticos complejos, usa fórmulas integradas y organiza tu información de manera eficiente. Guarda tus libros de trabajo en formato <strong>.xlsx</strong> asegurando total compatibilidad.</p>
+            </div>
+            
+            <div class="app-info-block slides">
+                <h3>MEOW SLIDES V3.0</h3>
+                <p>Diseña presentaciones visualmente impactantes en tiempo récord. Crea tarjetas, añade textos dinámicos, gestiona tus notas de orador y personaliza cada detalle visual. Exporta tu presentación final en formato <strong>.pptx</strong> para cautivar a tu audiencia en cualquier sala de juntas o dispositivo.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- OVERLAY 2: ABOUT Y GITHUB -->
+    <div class="overlay" id="overlay-about">
+        <div class="overlay-close" id="close-about">&times;</div>
+        <div class="overlay-content" style="text-align: center;">
+            <h2>ABOUT</h2>
+            <div class="about-text">
+                <p><strong>Meow Office App</strong></p>
+                <p>Versión: 1.0.0</p>
+                <p style="margin-top: 15px; color: #aaa;">Desarrollado por:</p>
+                <p><strong>Moustache de Chat LAB</strong></p>
+            </div>
+            
+            <a href="https://github.com/galeed/Meow-Office-App" target="_blank" class="github-btn">
+                <!-- Icono SVG de GitHub -->
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                </svg>
+                Ver código fuente
+            </a>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Lógica de transición principal
             const btnIniciar = document.getElementById('iniciar-btn');
             const introScreen = document.getElementById('intro-screen');
             const mainMenu = document.getElementById('main-menu');
             const body = document.body;
 
             btnIniciar.addEventListener('click', () => {
-                // Desvanece y difumina la cuadrícula completa estilo A24
                 introScreen.classList.add('intro-hidden');
-
-                // Tras la animación (800ms), quita el menú del flujo y muestra las apps
                 setTimeout(() => {
                     introScreen.style.display = 'none';
-                    body.style.overflow = 'auto'; // Permitir scroll si la pantalla es pequeña
+                    body.style.overflow = 'auto'; // Habilitar scroll para el menú principal
                     
                     mainMenu.style.display = 'flex';
-                    void mainMenu.offsetWidth; // Reiniciar DOM para animaciones
+                    void mainMenu.offsetWidth; 
                     mainMenu.classList.add('visible');
                 }, 800); 
+            });
+
+            // Lógica de Overlays (Ventanas emergentes)
+            const btnHamburger = document.getElementById('btn-hamburger');
+            const btnAbout = document.getElementById('btn-about');
+            
+            const overlayApps = document.getElementById('overlay-apps');
+            const overlayAbout = document.getElementById('overlay-about');
+            
+            const closeApps = document.getElementById('close-apps');
+            const closeAbout = document.getElementById('close-about');
+
+            // Abrir overlays
+            btnHamburger.addEventListener('click', () => {
+                overlayApps.classList.add('active');
+            });
+            
+            btnAbout.addEventListener('click', () => {
+                overlayAbout.classList.add('active');
+            });
+
+            // Cerrar overlays con la X
+            closeApps.addEventListener('click', () => {
+                overlayApps.classList.remove('active');
+            });
+            
+            closeAbout.addEventListener('click', () => {
+                overlayAbout.classList.remove('active');
+            });
+
+            // Cerrar overlays al hacer clic fuera del contenido (en el fondo desenfocado)
+            window.addEventListener('click', (e) => {
+                if (e.target === overlayApps) {
+                    overlayApps.classList.remove('active');
+                }
+                if (e.target === overlayAbout) {
+                    overlayAbout.classList.remove('active');
+                }
             });
         });
     </script>
